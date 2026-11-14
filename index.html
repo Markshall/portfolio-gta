@@ -15,45 +15,60 @@
   </head>
   <body>
     <!--
-      Shared logo on a 240×140 grid: an outlined M, and an outlined E with syntax-highlighted lines of
-      code running along it, ending in a blinking cursor.
+      Shared logo on a 240×140 grid: a heavy, plain M and E with a blue-to-pink-to-orange fill, faint upright
+      palm trees, and a white / violet / dark-purple layered outline (8 units deep).
       #logo-me is the plain letter shape (also the window in the hero reveal); #logo-art is the full logo.
     -->
     <svg width="0" height="0" style="position: absolute" aria-hidden="true">
       <defs>
         <path
           id="logo-me"
-          d="M0 140V0H40L64 52L88 0H128V140H90V72L72 112H56L38 72V140Z M140 140V0H240V36H180V52H228V88H180V104H240V140Z"
+          d="M0 140V0H40L64 52L88 0H128V140H90V68L64 124L38 68V140Z M140 140V0H240V32H180V54H226V86H180V108H240V140Z"
         />
-        <linearGradient id="grad-logo" gradientUnits="userSpaceOnUse" x1="0" y1="-4" x2="0" y2="144">
-          <stop offset="0" stop-color="#b57bd0" />
-          <stop offset="0.4" stop-color="#e9639b" />
-          <stop offset="0.75" stop-color="#f79990" />
-          <stop offset="1" stop-color="#fdc396" />
+        <clipPath id="logo-clip"><use href="#logo-me" /></clipPath>
+        <linearGradient id="grad-logo" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="36" y2="140">
+          <stop offset="0" stop-color="#3f6fe0" />
+          <stop offset="0.28" stop-color="#8a5ce0" />
+          <stop offset="0.55" stop-color="#f2409b" />
+          <stop offset="0.82" stop-color="#ff8a4f" />
+          <stop offset="1" stop-color="#ffb347" />
         </linearGradient>
-        <linearGradient id="logo-inner" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="140">
-          <stop offset="0" stop-color="#262546" />
-          <stop offset="1" stop-color="#0c0d1b" />
+        <linearGradient id="logo-edge" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="140">
+          <stop offset="0" stop-color="#6a2fc4" />
+          <stop offset="1" stop-color="#a02ab4" />
         </linearGradient>
+        <linearGradient id="logo-palm-tone" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="140">
+          <stop offset="0" stop-color="#2a2fa8" />
+          <stop offset="0.5" stop-color="#8a2a9a" />
+          <stop offset="1" stop-color="#c43a5a" />
+        </linearGradient>
+        <mask id="logo-palms" maskUnits="userSpaceOnUse" x="0" y="0" width="240" height="140">
+          <g fill="#fff">
+            <use href="#palm" x="-36.3" y="-0.65" width="110" height="220" />
+            <use href="#palm" x="56.3" y="21.65" width="90" height="180" transform="rotate(4 104 140)" />
+            <use href="#palm" x="102.4" y="-9.8" width="120" height="240" />
+            <use href="#palm" x="185.6" y="4.8" width="80" height="160" transform="rotate(-5 228 140)" />
+          </g>
+        </mask>
         <g id="logo-art">
-          <!-- M -->
-          <path
-            d="M0 140V0H40L64 52L88 0H128V140H90V72L72 112H56L38 72V140Z"
-            fill="url(#logo-inner)"
-            stroke="url(#grad-logo)"
-            stroke-width="6"
-            stroke-linejoin="round"
+          <!-- Outline, outside in: dark purple, violet, white. Each is a stroke whose inner half the fill covers. -->
+          <g fill="none" stroke-linejoin="miter" stroke-miterlimit="6">
+            <use href="#logo-me" stroke="#2a1150" stroke-width="16" />
+            <use href="#logo-me" stroke="url(#logo-edge)" stroke-width="9" />
+            <use href="#logo-me" stroke="#fff" stroke-width="3" />
+          </g>
+          <use href="#logo-me" fill="url(#grad-logo)" />
+          <!-- Upright palm silhouettes, reusing the scene's palm: a darker tint of the fill all the way down -->
+          <rect
+            x="0"
+            y="0"
+            width="240"
+            height="140"
+            fill="url(#logo-palm-tone)"
+            mask="url(#logo-palms)"
+            clip-path="url(#logo-clip)"
+            opacity="0.5"
           />
-          <!-- E: outlined like the M, with lines of code running along its arms -->
-          <path
-            d="M140 140V0H240V36H180V52H228V88H180V104H240V140Z"
-            fill="url(#logo-inner)"
-            stroke="url(#grad-logo)"
-            stroke-width="6"
-            stroke-linejoin="round"
-          />
-          <!-- Lines of code, generated on each load by src/main.ts (drawCode) -->
-          <g data-code></g>
         </g>
       </defs>
     </svg>
@@ -170,7 +185,7 @@
               <mask id="logo-hole" maskUnits="userSpaceOnUse">
                 <rect class="mask-bg" width="100%" height="100%" fill="#fff" />
                 <g data-logo-xform>
-                  <use href="#logo-me" fill="#000" stroke="#000" stroke-width="6" stroke-linejoin="round" />
+                  <use href="#logo-me" fill="#000" stroke="#000" stroke-width="16" stroke-linejoin="miter" stroke-miterlimit="6" />
                 </g>
               </mask>
             </defs>
@@ -294,7 +309,7 @@
       <div class="wrap finale-inner">
         <svg
           class="finale-logo reveal"
-          viewBox="-4 -4 248 148"
+          viewBox="-10 -10 260 160"
           role="img"
           aria-label="ME"
         >

@@ -1,6 +1,6 @@
 # portfolio-gta
 
-A cinematic take on mark-eriksson.com: the pixel "ME_" logo is a window onto a sunset scene, and scales out on scroll to reveal it.
+A cinematic take on mark-eriksson.com: the sunset-filled "ME" logo is a window onto a sunset scene, and scales out on scroll to reveal it.
 
 ```shell
 npm install

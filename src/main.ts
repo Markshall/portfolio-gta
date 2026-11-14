@@ -179,62 +179,6 @@ function drawFronds(r: () => number) {
   g.append(el("circle", { cx: base[0], cy: base[1], r: 12 }));
 }
 
-/* ───────────── Logo: the lines of code inside the E ───────────── */
-
-const TOKEN_COLOURS = ["#ffb2c6", "#fdc396", "#8d88cb", "#e6ffa3"];
-
-// Each row of the E, on the logo's 240×140 grid: where its text sits, and how far right it can run
-// before it meets the outline. The arms have room for full lines; the gaps between them only cross
-// the upright, so they get short ones (or none), like blank or closing-brace lines.
-const CODE_ROWS = [
-  { y: 13, maxX: 230, arm: true },
-  { y: 39, maxX: 172, arm: false },
-  { y: 65, maxX: 220, arm: true },
-  { y: 91, maxX: 172, arm: false },
-  { y: 117, maxX: 230, arm: true, cursor: true },
-];
-
-function drawCode() {
-  const g = $("[data-code]");
-  const rand = (min: number, max: number) => min + Math.random() * (max - min);
-  const pick = <T,>(items: T[]) => items[Math.floor(Math.random() * items.length)];
-  const LEFT = 152;
-  const GAP = 5;
-  const H = 10;
-  const CURSOR_W = 12;
-
-  for (const [i, row] of CODE_ROWS.entries()) {
-    // The first line always starts flush left, like the top of a file; the rest may be indented.
-    const indent = i === 0 ? 0 : row.arm ? pick([0, 0, 10, 20]) : pick([0, 10]);
-    let x = LEFT + indent;
-    const end = row.maxX - (row.cursor ? CURSOR_W + GAP : 0);
-
-    if (!row.arm) {
-      // A short, dim token, or a blank line.
-      if (Math.random() < 0.65) {
-        const w = Math.round(rand(8, Math.min(16, end - x)));
-        g.append(el("rect", { x, y: row.y, width: w, height: H, rx: H / 2, fill: pick(["#ffb2c6", "#8d88cb"]), "fill-opacity": 0.6 }));
-      }
-      continue;
-    }
-
-    // Fill the line with tokens, stopping somewhere short of the edge so lines end raggedly.
-    const stopAt = rand(x + 30, end);
-    let first = true;
-    while (x < stopAt) {
-      const w = Math.round(Math.min(rand(first ? 10 : 8, 30), end - x));
-      if (w < 8) break;
-      g.append(el("rect", { x, y: row.y, width: w, height: H, rx: H / 2, fill: pick(TOKEN_COLOURS) }));
-      x += w + GAP;
-      first = false;
-    }
-
-    if (row.cursor) {
-      g.append(el("rect", { class: "blink", x, y: row.y - 4, width: CURSOR_W, height: 18, rx: 2, fill: "#fff9cb" }));
-    }
-  }
-}
-
 /* ───────────── Hero: the logo scales out to reveal the scene ───────────── */
 
 // Logo grid units. The zoom heads into the E's upright, where it meets the middle arm,
@@ -242,7 +186,7 @@ function drawCode() {
 const LOGO_W = 240;
 const LOGO_H = 140;
 const FOCUS = { x: 160, y: 70 };
-// How far the solid stroke around the focus reaches either side, and above and below.
+// How far the solid upright around the focus reaches either side, and above and below.
 const FOCUS_HALF_W = 20;
 const FOCUS_HALF_H = 70;
 
@@ -415,7 +359,6 @@ function setupReveals() {
 fillStats();
 renderProjects();
 drawScene();
-drawCode();
 
 if (!reducedMotion) {
   // Load the screenshots eagerly so their heights are known before ScrollTrigger measures.

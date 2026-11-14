@@ -103,16 +103,6 @@ a {
   color: var(--pink);
 }
 
-.blink {
-  animation: blink 1.1s steps(1) infinite;
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0;
-  }
-}
-
 /* ───────────── Buttons ───────────── */
 
 .btn {
@@ -809,7 +799,6 @@ a {
   .statement-text .w {
     opacity: 1;
   }
-  .blink,
   .scroll-hint i {
     animation: none;
   }
