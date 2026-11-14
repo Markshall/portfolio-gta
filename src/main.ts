@@ -42,7 +42,7 @@ function renderProjects() {
             <ul class="chips reveal">${p.stack.map(s => `<li>${esc(s)}</li>`).join("")}</ul>
             ${
               href
-                ? `<div class="actions reveal"><a class="btn btn-solid" href="${href}" target="_blank" rel="noopener noreferrer">${
+                ? `<div class="actions reveal"><a class="btn btn-lime" href="${href}" target="_blank" rel="noopener noreferrer">${
                     p.retired ? "View archived site" : "Visit site"
                   } ↗</a></div>`
                 : ""
@@ -85,8 +85,8 @@ function drawScene() {
   const skyline = $("[data-skyline]");
   const base = 642;
   const layers = [
-    { fill: "#6a2368", min: 40, max: 120, step: [26, 60], windows: 0 },
-    { fill: "#2a0e3c", min: 24, max: 190, step: [18, 52], windows: 0.18 },
+    { fill: "#4a4585", min: 40, max: 120, step: [26, 60], windows: 0 },
+    { fill: "#1b1b38", min: 24, max: 190, step: [18, 52], windows: 0.18 },
   ];
   for (const layer of layers) {
     const g = el("g", { fill: layer.fill });
@@ -102,7 +102,7 @@ function drawScene() {
         for (let wy = base - h + 8; wy < base - 8; wy += 9) {
           for (let wx = x + 4; wx < x + w - 6; wx += 7) {
             if (r() < layer.windows) {
-              g.append(el("rect", { x: wx, y: wy, width: 3, height: 4, fill: "#ffc979", opacity: 0.3 + r() * 0.5 }));
+              g.append(el("rect", { x: wx, y: wy, width: 3, height: 4, fill: "#fdc396", opacity: 0.3 + r() * 0.5 }));
             }
           }
         }
@@ -126,7 +126,7 @@ function drawScene() {
         width: w,
         height: 1.5 + t * 3,
         rx: 2,
-        fill: t < 0.45 ? "#ffc27a" : "#ff6f9e",
+        fill: t < 0.45 ? "#fdc396" : "#e9639b",
         opacity: (1 - t) * 0.65,
       }),
     );
@@ -179,13 +179,72 @@ function drawFronds(r: () => number) {
   g.append(el("circle", { cx: base[0], cy: base[1], r: 12 }));
 }
 
+/* ───────────── Logo: the lines of code inside the E ───────────── */
+
+const TOKEN_COLOURS = ["#ffb2c6", "#fdc396", "#8d88cb", "#e6ffa3"];
+
+// Each row of the E, on the logo's 240×140 grid: where its text sits, and how far right it can run
+// before it meets the outline. The arms have room for full lines; the gaps between them only cross
+// the upright, so they get short ones (or none), like blank or closing-brace lines.
+const CODE_ROWS = [
+  { y: 13, maxX: 230, arm: true },
+  { y: 39, maxX: 172, arm: false },
+  { y: 65, maxX: 220, arm: true },
+  { y: 91, maxX: 172, arm: false },
+  { y: 117, maxX: 230, arm: true, cursor: true },
+];
+
+function drawCode() {
+  const g = $("[data-code]");
+  const rand = (min: number, max: number) => min + Math.random() * (max - min);
+  const pick = <T,>(items: T[]) => items[Math.floor(Math.random() * items.length)];
+  const LEFT = 152;
+  const GAP = 5;
+  const H = 10;
+  const CURSOR_W = 12;
+
+  for (const [i, row] of CODE_ROWS.entries()) {
+    // The first line always starts flush left, like the top of a file; the rest may be indented.
+    const indent = i === 0 ? 0 : row.arm ? pick([0, 0, 10, 20]) : pick([0, 10]);
+    let x = LEFT + indent;
+    const end = row.maxX - (row.cursor ? CURSOR_W + GAP : 0);
+
+    if (!row.arm) {
+      // A short, dim token, or a blank line.
+      if (Math.random() < 0.65) {
+        const w = Math.round(rand(8, Math.min(16, end - x)));
+        g.append(el("rect", { x, y: row.y, width: w, height: H, rx: H / 2, fill: pick(["#ffb2c6", "#8d88cb"]), "fill-opacity": 0.6 }));
+      }
+      continue;
+    }
+
+    // Fill the line with tokens, stopping somewhere short of the edge so lines end raggedly.
+    const stopAt = rand(x + 30, end);
+    let first = true;
+    while (x < stopAt) {
+      const w = Math.round(Math.min(rand(first ? 10 : 8, 30), end - x));
+      if (w < 8) break;
+      g.append(el("rect", { x, y: row.y, width: w, height: H, rx: H / 2, fill: pick(TOKEN_COLOURS) }));
+      x += w + GAP;
+      first = false;
+    }
+
+    if (row.cursor) {
+      g.append(el("rect", { class: "blink", x, y: row.y - 4, width: CURSOR_W, height: 18, rx: 2, fill: "#fff9cb" }));
+    }
+  }
+}
+
 /* ───────────── Hero: the logo scales out to reveal the scene ───────────── */
 
 // Logo grid units. The zoom heads into the E's upright, where it meets the middle arm,
 // so the hole keeps covering the screen as it grows.
-const LOGO_W = 130;
-const LOGO_H = 70;
-const FOCUS = { x: 75, y: 35 };
+const LOGO_W = 240;
+const LOGO_H = 140;
+const FOCUS = { x: 160, y: 70 };
+// How far the solid stroke around the focus reaches either side, and above and below.
+const FOCUS_HALF_W = 20;
+const FOCUS_HALF_H = 70;
 
 function setupHero() {
   const xforms = $$<SVGGElement>("[data-logo-xform]");
@@ -197,8 +256,7 @@ function setupHero() {
     const vh = innerHeight;
     const logoW = Math.min(vw * (vw < 700 ? 0.74 : 0.5), (vh * 0.5 * LOGO_W) / LOGO_H, 680);
     const b = logoW / LOGO_W;
-    // Upright is 10 units wide (5 either side of the focus) and 70 tall.
-    const maxScale = 1.25 * Math.max(vw / (10 * b), vh / (70 * b));
+    const maxScale = 1.25 * Math.max(vw / (2 * FOCUS_HALF_W * b), vh / (2 * FOCUS_HALF_H * b));
     layout = { b, cx: vw / 2, cy: vh * 0.46, maxScale, vw, vh };
     render();
   };
@@ -294,7 +352,7 @@ function setupReveals() {
     .join("");
   gsap.to($$(".w", statement), {
     opacity: 1,
-    color: "#fff3cf",
+    color: "#fff9cb",
     stagger: 0.1,
     ease: "none",
     scrollTrigger: { trigger: statement, start: "top 80%", end: "bottom 45%", scrub: true },
@@ -357,6 +415,7 @@ function setupReveals() {
 fillStats();
 renderProjects();
 drawScene();
+drawCode();
 
 if (!reducedMotion) {
   // Load the screenshots eagerly so their heights are known before ScrollTrigger measures.

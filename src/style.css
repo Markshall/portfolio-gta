@@ -4,22 +4,23 @@
 :root {
   color-scheme: dark;
 
-  --ink: #0d0a14;
-  --ink-2: #160f22;
-  --plum: #2a1238;
-  --violet: #9b4bea;
-  --rose: #ff5f9e;
-  --pink: #ffb0cf;
-  --peach: #ffa277;
-  --sun: #ffe39a;
-  --cream: #fff3dc;
-  --text: #f3e6f0;
-  --muted: #b8a3c2;
-  --line: rgb(255 176 207 / 0.18);
+  --ink: #0c0d1b;
+  --ink-2: #1f1f38;
+  --plum: #21254c;
+  --violet: #8d88cb;
+  --rose: #e9639b;
+  --pink: #ffb2c6;
+  --peach: #fdc396;
+  --sun: #fff9cb;
+  --cream: #fff9cb;
+  --lime: #e6ffa3;
+  --text: #fee8ea;
+  --muted: #a9a6cc;
+  --line: rgb(255 178 198 / 0.18);
 
-  --grad-logo: linear-gradient(180deg, #ffe39a 0%, #ffa277 32%, #ff5f9e 66%, #9b4bea 100%);
-  --grad-text: linear-gradient(180deg, #fff3cf 0%, #ffc2c9 38%, #ff7fae 72%, #e05cc8 100%);
-  --grad-btn: linear-gradient(100deg, #ffd27f 0%, #ff8f8a 45%, #ff5f9e 100%);
+  --grad-logo: linear-gradient(180deg, #b57bd0 0%, #e9639b 40%, #f79990 75%, #fdc396 100%);
+  --grad-text: linear-gradient(180deg, #fff9cb 0%, #ffd9cf 35%, #ffb2c6 65%, #e9639b 100%);
+  --grad-btn: linear-gradient(100deg, #ffc5b8 0%, #ffb2c6 100%);
 
   --font-display: "Anton", "Impact", "Arial Narrow", sans-serif;
   --font-body: "Inter Tight Variable", system-ui, sans-serif;
@@ -134,24 +135,34 @@ a {
 
 .btn-solid {
   background: var(--grad-btn);
-  color: #1a0b1f;
-  box-shadow: 0 10px 30px -10px rgb(255 95 158 / 0.7);
+  color: #3b2f51;
+  box-shadow: 0 10px 30px -10px rgb(233 99 155 / 0.7);
 }
 
 .btn-solid:hover {
   transform: translateY(-2px);
-  box-shadow: 0 16px 40px -10px rgb(255 95 158 / 0.9);
+  box-shadow: 0 16px 40px -10px rgb(233 99 155 / 0.9);
+}
+
+.btn-lime {
+  background: var(--lime);
+  color: #0d0c1a;
+  box-shadow: 0 10px 30px -12px rgb(230 255 163 / 0.45);
+}
+
+.btn-lime:hover {
+  transform: translateY(-2px);
 }
 
 .btn-ghost {
   color: var(--cream);
-  border: 1.5px solid rgb(255 243 220 / 0.55);
-  background: rgb(13 10 20 / 0.25);
+  border: 1.5px solid rgb(255 249 203 / 0.55);
+  background: rgb(12 13 27 / 0.25);
   backdrop-filter: blur(6px);
 }
 
 .btn-ghost:hover {
-  background: rgb(255 243 220 / 0.12);
+  background: rgb(255 249 203 / 0.12);
 }
 
 /* ───────────── Header ───────────── */
@@ -178,7 +189,7 @@ a {
 }
 
 .site-header.is-solid {
-  background: rgb(13 10 20 / 0.72);
+  background: rgb(12 13 27 / 0.72);
   backdrop-filter: blur(14px);
 }
 
@@ -270,7 +281,7 @@ a {
 }
 
 [data-logo-fill] {
-  filter: drop-shadow(0 0 28px rgb(255 95 158 / 0.45));
+  filter: drop-shadow(0 0 28px rgb(233 99 155 / 0.45));
 }
 
 .hero-intro {
@@ -335,12 +346,12 @@ a {
 
 .hero-copy h1 {
   font-size: clamp(4.2rem, 15vw, 15rem);
-  filter: drop-shadow(0 6px 30px rgb(13 10 20 / 0.55));
+  filter: drop-shadow(0 6px 30px rgb(12 13 27 / 0.55));
 }
 
 .hero-copy .kicker {
   color: var(--cream);
-  text-shadow: 0 1px 12px rgb(13 10 20 / 0.6);
+  text-shadow: 0 1px 12px rgb(12 13 27 / 0.6);
 }
 
 .lede {
@@ -349,7 +360,7 @@ a {
   font-size: clamp(1.05rem, 1vw + 0.8rem, 1.35rem);
   line-height: 1.5;
   color: var(--cream);
-  text-shadow: 0 1px 16px rgb(13 10 20 / 0.8);
+  text-shadow: 0 1px 16px rgb(12 13 27 / 0.8);
 }
 
 .actions {
@@ -536,7 +547,7 @@ a {
   font-weight: 600;
   letter-spacing: 0.04em;
   color: var(--pink);
-  background: rgb(255 176 207 / 0.04);
+  background: rgb(255 178 198 / 0.04);
 }
 
 .project .actions {
@@ -547,13 +558,13 @@ a {
   display: inline-block;
   margin-left: 0.7em;
   padding: 0.2em 0.75em;
-  border: 1px solid rgb(255 227 154 / 0.5);
+  border: 1px solid rgb(255 249 203 / 0.5);
   border-radius: 999px;
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.16em;
   color: var(--sun);
-  background: rgb(255 227 154 / 0.1);
+  background: rgb(255 249 203 / 0.1);
   vertical-align: middle;
 }
 
@@ -569,7 +580,7 @@ a {
   overflow: hidden;
   background: var(--ink-2);
   box-shadow:
-    0 0 0 1px rgb(255 176 207 / 0.16),
+    0 0 0 1px rgb(255 178 198 / 0.16),
     0 40px 90px -30px color-mix(in oklab, var(--glow) 60%, transparent),
     0 30px 60px -30px rgb(0 0 0 / 0.8);
 }
@@ -592,7 +603,7 @@ a {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(180deg, transparent 70%, rgb(13 10 20 / 0.45));
+  background: linear-gradient(180deg, transparent 70%, rgb(12 13 27 / 0.45));
 }
 
 .shot-bar {
@@ -601,7 +612,7 @@ a {
   align-items: center;
   gap: 6px;
   padding: 10px 14px;
-  background: rgb(13 10 20 / 0.7);
+  background: rgb(12 13 27 / 0.7);
   backdrop-filter: blur(10px);
   font-size: 0.72rem;
   color: var(--muted);
@@ -641,13 +652,13 @@ a {
 .experience {
   position: relative;
   padding-bottom: clamp(90px, 14vh, 180px);
-  background: linear-gradient(180deg, var(--ink) 0%, var(--plum) 45%, #3b1440 75%, var(--ink) 100%);
+  background: linear-gradient(180deg, var(--ink) 0%, var(--plum) 45%, #2c3868 75%, var(--ink) 100%);
 }
 
 .job {
   padding: clamp(24px, 4vw, 48px);
   border-radius: 24px;
-  background: rgb(13 10 20 / 0.45);
+  background: rgb(12 13 27 / 0.45);
   border: 1px solid var(--line);
   backdrop-filter: blur(8px);
 }
@@ -719,7 +730,7 @@ a {
   position: absolute;
   inset: auto -20% -40% -20%;
   height: 90%;
-  background: radial-gradient(50% 50% at 50% 60%, rgb(255 95 158 / 0.35), rgb(155 75 234 / 0.15) 50%, transparent 72%);
+  background: radial-gradient(50% 50% at 50% 60%, rgb(233 99 155 / 0.35), rgb(141 136 203 / 0.15) 50%, transparent 72%);
   pointer-events: none;
 }
 
@@ -732,7 +743,7 @@ a {
 .finale-logo {
   width: min(360px, 60vw);
   height: auto;
-  filter: drop-shadow(0 0 40px rgb(255 95 158 / 0.45));
+  filter: drop-shadow(0 0 40px rgb(233 99 155 / 0.45));
 }
 
 .finale-title {

@@ -8,34 +8,60 @@
       name="description"
       content="Mark Eriksson, senior full-stack developer in the UK. Websites and internal systems built end to end, from the database to the last pixel of CSS."
     />
-    <meta name="theme-color" content="#0d0a14" />
+    <meta name="theme-color" content="#0c0d1b" />
     <meta name="robots" content="noindex, nofollow" />
     <script>document.documentElement.classList.add("js")</script>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body>
-    <!-- Shared logo geometry: the pixel "ME_" monogram from mark-eriksson.com, on a 130×70 grid. -->
+    <!--
+      Shared logo on a 240×140 grid: an outlined M, and an outlined E with syntax-highlighted lines of
+      code running along it, ending in a blinking cursor.
+      #logo-me is the plain letter shape (also the window in the hero reveal); #logo-art is the full logo.
+    -->
     <svg width="0" height="0" style="position: absolute" aria-hidden="true">
       <defs>
         <path
           id="logo-me"
-          d="M0 0h10v70h-10z M10 10h10v10h-10z M20 20h10v10h-10z M30 30h10v10h-10z M40 20h10v10h-10z M50 10h10v10h-10z M60 0h10v70h-10z M70 0h30v10h-30z M70 30h20v10h-20z M70 60h30v10h-30z M70 0h10v70h-10z"
+          d="M0 140V0H40L64 52L88 0H128V140H90V72L72 112H56L38 72V140Z M140 140V0H240V36H180V52H228V88H180V104H240V140Z"
         />
-        <path id="logo-cursor" d="M110 60h20v10h-20z" />
-        <linearGradient id="grad-logo" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#ffe39a" />
-          <stop offset="0.32" stop-color="#ffa277" />
-          <stop offset="0.66" stop-color="#ff5f9e" />
-          <stop offset="1" stop-color="#9b4bea" />
+        <linearGradient id="grad-logo" gradientUnits="userSpaceOnUse" x1="0" y1="-4" x2="0" y2="144">
+          <stop offset="0" stop-color="#b57bd0" />
+          <stop offset="0.4" stop-color="#e9639b" />
+          <stop offset="0.75" stop-color="#f79990" />
+          <stop offset="1" stop-color="#fdc396" />
         </linearGradient>
+        <linearGradient id="logo-inner" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="140">
+          <stop offset="0" stop-color="#262546" />
+          <stop offset="1" stop-color="#0c0d1b" />
+        </linearGradient>
+        <g id="logo-art">
+          <!-- M -->
+          <path
+            d="M0 140V0H40L64 52L88 0H128V140H90V72L72 112H56L38 72V140Z"
+            fill="url(#logo-inner)"
+            stroke="url(#grad-logo)"
+            stroke-width="6"
+            stroke-linejoin="round"
+          />
+          <!-- E: outlined like the M, with lines of code running along its arms -->
+          <path
+            d="M140 140V0H240V36H180V52H228V88H180V104H240V140Z"
+            fill="url(#logo-inner)"
+            stroke="url(#grad-logo)"
+            stroke-width="6"
+            stroke-linejoin="round"
+          />
+          <!-- Lines of code, generated on each load by src/main.ts (drawCode) -->
+          <g data-code></g>
+        </g>
       </defs>
     </svg>
 
     <header class="site-header" data-header>
       <a href="#top" class="brand" aria-label="Mark Eriksson, back to top">
-        <svg viewBox="0 0 130 70" width="46" height="25" shape-rendering="crispEdges" aria-hidden="true">
+        <svg viewBox="0 0 240 140" width="48" height="28" aria-hidden="true">
           <use href="#logo-me" fill="url(#grad-logo)" />
-          <use href="#logo-cursor" fill="url(#grad-logo)" class="blink" />
         </svg>
       </a>
       <nav class="site-nav" aria-label="Main">
@@ -59,26 +85,26 @@
           >
             <defs>
               <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stop-color="#160a33" />
-                <stop offset="0.28" stop-color="#4a1a6b" />
-                <stop offset="0.48" stop-color="#a42f7f" />
-                <stop offset="0.6" stop-color="#ff5f86" />
-                <stop offset="0.68" stop-color="#ff9a6a" />
-                <stop offset="0.72" stop-color="#ffc979" />
+                <stop offset="0" stop-color="#0c0d1b" />
+                <stop offset="0.28" stop-color="#262a58" />
+                <stop offset="0.48" stop-color="#6a5aa0" />
+                <stop offset="0.6" stop-color="#ce77bc" />
+                <stop offset="0.68" stop-color="#f79990" />
+                <stop offset="0.72" stop-color="#fdc396" />
               </linearGradient>
               <linearGradient id="sun" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stop-color="#fff2b0" />
-                <stop offset="0.45" stop-color="#ffb070" />
-                <stop offset="1" stop-color="#ff4f8f" />
+                <stop offset="0" stop-color="#fff9cb" />
+                <stop offset="0.45" stop-color="#fdc396" />
+                <stop offset="1" stop-color="#e9639b" />
               </linearGradient>
               <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stop-color="#5a1d63" />
-                <stop offset="0.35" stop-color="#2c0f45" />
-                <stop offset="1" stop-color="#0d0a14" />
+                <stop offset="0" stop-color="#3a3570" />
+                <stop offset="0.35" stop-color="#1f1f38" />
+                <stop offset="1" stop-color="#0c0d1b" />
               </linearGradient>
               <radialGradient id="haze" cx="0.5" cy="0.62" r="0.55">
-                <stop offset="0" stop-color="#ffb27a" stop-opacity="0.55" />
-                <stop offset="1" stop-color="#ffb27a" stop-opacity="0" />
+                <stop offset="0" stop-color="#fdc396" stop-opacity="0.5" />
+                <stop offset="1" stop-color="#fdc396" stop-opacity="0" />
               </radialGradient>
               <mask id="sun-cut">
                 <rect x="0" y="0" width="1600" height="1000" fill="#fff" />
@@ -97,8 +123,8 @@
 
             <g data-layer="sky">
               <rect width="1600" height="1000" fill="url(#sky)" />
-              <g data-stars fill="#ffe7f3"></g>
-              <g fill="#ff9cc6" opacity="0.35">
+              <g data-stars fill="#fee8ea"></g>
+              <g fill="#ffb2c6" opacity="0.35">
                 <ellipse cx="300" cy="330" rx="260" ry="14" />
                 <ellipse cx="420" cy="360" rx="180" ry="9" />
                 <ellipse cx="1240" cy="300" rx="300" ry="12" />
@@ -118,7 +144,7 @@
               <g data-ripples></g>
             </g>
 
-            <g data-layer="palms" color="#0b0613" fill="#0b0613">
+            <g data-layer="palms" color="#090a16" fill="#090a16">
               <use href="#palm" x="-120" y="190" width="520" height="1040" />
               <use href="#palm" x="60" y="380" width="340" height="680" transform="rotate(-6 230 720)" />
               <g transform="translate(1600 0) scale(-1 1)">
@@ -130,10 +156,10 @@
             <rect width="1600" height="1000" fill="url(#vignette)" />
             <defs>
               <linearGradient id="vignette" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stop-color="#0d0a14" stop-opacity="0.35" />
-                <stop offset="0.4" stop-color="#0d0a14" stop-opacity="0" />
-                <stop offset="0.8" stop-color="#0d0a14" stop-opacity="0.15" />
-                <stop offset="1" stop-color="#0d0a14" stop-opacity="0.9" />
+                <stop offset="0" stop-color="#0c0d1b" stop-opacity="0.35" />
+                <stop offset="0.4" stop-color="#0c0d1b" stop-opacity="0" />
+                <stop offset="0.8" stop-color="#0c0d1b" stop-opacity="0.15" />
+                <stop offset="1" stop-color="#0c0d1b" stop-opacity="0.9" />
               </linearGradient>
             </defs>
           </svg>
@@ -143,18 +169,16 @@
             <defs>
               <mask id="logo-hole" maskUnits="userSpaceOnUse">
                 <rect class="mask-bg" width="100%" height="100%" fill="#fff" />
-                <g data-logo-xform shape-rendering="crispEdges">
-                  <use href="#logo-me" fill="#000" />
-                  <use href="#logo-cursor" fill="#000" class="blink" />
+                <g data-logo-xform>
+                  <use href="#logo-me" fill="#000" stroke="#000" stroke-width="6" stroke-linejoin="round" />
                 </g>
               </mask>
             </defs>
             <rect class="mask-ink" data-ink width="100%" height="100%" mask="url(#logo-hole)" />
             <!-- Gradient fill sitting in the hole, which fades away to let the scene through. -->
-            <g data-logo-fill shape-rendering="crispEdges">
+            <g data-logo-fill>
               <g data-logo-xform>
-                <use href="#logo-me" fill="url(#grad-logo)" />
-                <use href="#logo-cursor" fill="url(#grad-logo)" class="blink" />
+                <use href="#logo-art" />
               </g>
             </g>
           </svg>
@@ -270,13 +294,11 @@
       <div class="wrap finale-inner">
         <svg
           class="finale-logo reveal"
-          viewBox="0 0 130 70"
-          shape-rendering="crispEdges"
+          viewBox="-4 -4 248 148"
           role="img"
           aria-label="ME"
         >
-          <use href="#logo-me" fill="url(#grad-logo)" />
-          <use href="#logo-cursor" fill="url(#grad-logo)" class="blink" />
+          <use href="#logo-art" />
         </svg>
         <p class="display grad-text finale-title reveal">Say hello</p>
         <a class="btn btn-solid btn-big reveal" href="mailto:me@mark-eriksson.com">me@mark-eriksson.com</a>
