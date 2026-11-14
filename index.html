@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mark Eriksson — Full-stack developer</title>
+    <meta
+      name="description"
+      content="Mark Eriksson, senior full-stack developer in the UK. Websites and internal systems built end to end, from the database to the last pixel of CSS."
+    />
+    <meta name="theme-color" content="#0d0a14" />
+    <script>document.documentElement.classList.add("js")</script>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <!-- Shared logo geometry: the pixel "ME_" monogram from mark-eriksson.com, on a 130×70 grid. -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <defs>
+        <path
+          id="logo-me"
+          d="M0 0h10v70h-10z M10 10h10v10h-10z M20 20h10v10h-10z M30 30h10v10h-10z M40 20h10v10h-10z M50 10h10v10h-10z M60 0h10v70h-10z M70 0h30v10h-30z M70 30h20v10h-20z M70 60h30v10h-30z M70 0h10v70h-10z"
+        />
+        <path id="logo-cursor" d="M110 60h20v10h-20z" />
+        <linearGradient id="grad-logo" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ffe39a" />
+          <stop offset="0.32" stop-color="#ffa277" />
+          <stop offset="0.66" stop-color="#ff5f9e" />
+          <stop offset="1" stop-color="#9b4bea" />
+        </linearGradient>
+      </defs>
+    </svg>
+
+    <header class="site-header" data-header>
+      <a href="#top" class="brand" aria-label="Mark Eriksson, back to top">
+        <svg viewBox="0 0 130 70" width="46" height="25" shape-rendering="crispEdges" aria-hidden="true">
+          <use href="#logo-me" fill="url(#grad-logo)" />
+          <use href="#logo-cursor" fill="url(#grad-logo)" class="blink" />
+        </svg>
+      </a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="#work">Work</a>
+        <a href="#experience">Experience</a>
+        <a href="#contact">Contact</a>
+        <a href="https://github.com/Markshall" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <!-- ───────────── HERO: the logo is a window onto the scene, and scales out to reveal it ───────────── -->
+      <section class="hero" data-hero aria-labelledby="hero-title">
+        <div class="hero-stage">
+          <svg
+            class="scene"
+            data-scene
+            viewBox="0 0 1600 1000"
+            preserveAspectRatio="xMidYMid slice"
+            aria-hidden="true"
+          >
+            <defs>
+              <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#160a33" />
+                <stop offset="0.28" stop-color="#4a1a6b" />
+                <stop offset="0.48" stop-color="#a42f7f" />
+                <stop offset="0.6" stop-color="#ff5f86" />
+                <stop offset="0.68" stop-color="#ff9a6a" />
+                <stop offset="0.72" stop-color="#ffc979" />
+              </linearGradient>
+              <linearGradient id="sun" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#fff2b0" />
+                <stop offset="0.45" stop-color="#ffb070" />
+                <stop offset="1" stop-color="#ff4f8f" />
+              </linearGradient>
+              <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#5a1d63" />
+                <stop offset="0.35" stop-color="#2c0f45" />
+                <stop offset="1" stop-color="#0d0a14" />
+              </linearGradient>
+              <radialGradient id="haze" cx="0.5" cy="0.62" r="0.55">
+                <stop offset="0" stop-color="#ffb27a" stop-opacity="0.55" />
+                <stop offset="1" stop-color="#ffb27a" stop-opacity="0" />
+              </radialGradient>
+              <mask id="sun-cut">
+                <rect x="0" y="0" width="1600" height="1000" fill="#fff" />
+                <g fill="#000">
+                  <rect x="0" y="560" width="1600" height="6" />
+                  <rect x="0" y="584" width="1600" height="9" />
+                  <rect x="0" y="610" width="1600" height="12" />
+                  <rect x="0" y="638" width="1600" height="16" />
+                </g>
+              </mask>
+              <symbol id="palm" viewBox="0 0 400 800" overflow="visible">
+                <path d="M188 800 C 182 600, 168 400, 204 128 L 220 130 C 196 400, 214 600, 226 800 Z" />
+                <g data-fronds></g>
+              </symbol>
+            </defs>
+
+            <g data-layer="sky">
+              <rect width="1600" height="1000" fill="url(#sky)" />
+              <g data-stars fill="#ffe7f3"></g>
+              <g fill="#ff9cc6" opacity="0.35">
+                <ellipse cx="300" cy="330" rx="260" ry="14" />
+                <ellipse cx="420" cy="360" rx="180" ry="9" />
+                <ellipse cx="1240" cy="300" rx="300" ry="12" />
+                <ellipse cx="1140" cy="335" rx="190" ry="8" />
+                <ellipse cx="820" cy="250" rx="140" ry="6" />
+              </g>
+              <circle cx="800" cy="600" r="560" fill="url(#haze)" />
+              <circle cx="800" cy="520" r="210" fill="url(#sun)" mask="url(#sun-cut)" />
+            </g>
+
+            <g data-layer="city">
+              <g data-skyline></g>
+            </g>
+
+            <g data-layer="sea">
+              <rect y="640" width="1600" height="360" fill="url(#sea)" />
+              <g data-ripples></g>
+            </g>
+
+            <g data-layer="palms" color="#0b0613" fill="#0b0613">
+              <use href="#palm" x="-120" y="190" width="520" height="1040" />
+              <use href="#palm" x="60" y="380" width="340" height="680" transform="rotate(-6 230 720)" />
+              <g transform="translate(1600 0) scale(-1 1)">
+                <use href="#palm" x="-160" y="150" width="560" height="1120" />
+              </g>
+              <use href="#palm" x="1160" y="420" width="320" height="640" transform="rotate(5 1320 760)" />
+            </g>
+
+            <rect width="1600" height="1000" fill="url(#vignette)" />
+            <defs>
+              <linearGradient id="vignette" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#0d0a14" stop-opacity="0.35" />
+                <stop offset="0.4" stop-color="#0d0a14" stop-opacity="0" />
+                <stop offset="0.8" stop-color="#0d0a14" stop-opacity="0.15" />
+                <stop offset="1" stop-color="#0d0a14" stop-opacity="0.9" />
+              </linearGradient>
+            </defs>
+          </svg>
+
+          <!-- The ink layer with the logo cut out of it. -->
+          <svg class="mask-layer" data-mask aria-hidden="true">
+            <defs>
+              <mask id="logo-hole" maskUnits="userSpaceOnUse">
+                <rect class="mask-bg" width="100%" height="100%" fill="#fff" />
+                <g data-logo-xform shape-rendering="crispEdges">
+                  <use href="#logo-me" fill="#000" />
+                  <use href="#logo-cursor" fill="#000" class="blink" />
+                </g>
+              </mask>
+            </defs>
+            <rect class="mask-ink" data-ink width="100%" height="100%" mask="url(#logo-hole)" />
+            <!-- Gradient fill sitting in the hole, which fades away to let the scene through. -->
+            <g data-logo-fill shape-rendering="crispEdges">
+              <g data-logo-xform>
+                <use href="#logo-me" fill="url(#grad-logo)" />
+                <use href="#logo-cursor" fill="url(#grad-logo)" class="blink" />
+              </g>
+            </g>
+          </svg>
+
+          <div class="hero-intro" data-intro>
+            <p class="kicker">Senior full-stack developer · UK</p>
+            <p class="scroll-hint"><span>Scroll</span><i></i></p>
+          </div>
+
+          <div class="hero-copy" data-hero-copy>
+            <p class="kicker">Senior full-stack developer · UK</p>
+            <h1 id="hero-title" class="display grad-text">Mark<br />Eriksson</h1>
+            <p class="lede">
+              Websites and internal systems, built end to end — from the database to the last pixel of CSS.
+            </p>
+            <div class="actions">
+              <a href="#work" class="btn btn-solid">See my work</a>
+              <a href="#experience" class="btn btn-ghost">Résumé</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───────────── STATEMENT ───────────── -->
+      <section class="statement wrap" aria-label="About">
+        <p class="statement-text" data-words>
+          I build and look after websites and internal systems end to end. Since 2018 I’ve been the sole lead developer
+          for Crown Oil and its sister companies — every site built from scratch, every pixel accounted for.
+        </p>
+        <dl class="stats">
+          <div class="reveal">
+            <dt>leading development at Crown Oil</dt>
+            <dd class="display grad-text"><span data-years>8</span><small>yrs</small></dd>
+          </div>
+          <div class="reveal">
+            <dt>live sites shipped</dt>
+            <dd class="display grad-text" data-project-total>13</dd>
+          </div>
+          <div class="reveal">
+            <dt>products of my own</dt>
+            <dd class="display grad-text" data-personal-total>2</dd>
+          </div>
+        </dl>
+      </section>
+
+      <!-- ───────────── WORK ───────────── -->
+      <section id="work" class="work" aria-labelledby="work-title">
+        <header class="chapter wrap">
+          <p class="kicker reveal">Chapter one</p>
+          <h2 id="work-title" class="display grad-text chapter-title reveal">The Work</h2>
+          <p class="chapter-lede reveal">
+            Every site the Crown Oil group runs, plus a couple of things of my own. Scroll through each one.
+          </p>
+        </header>
+        <div data-projects></div>
+      </section>
+
+      <!-- ───────────── EXPERIENCE ───────────── -->
+      <section id="experience" class="experience" aria-labelledby="exp-title">
+        <div class="wrap">
+          <header class="chapter">
+            <p class="kicker reveal">Chapter two</p>
+            <h2 id="exp-title" class="display grad-text chapter-title reveal">Experience</h2>
+          </header>
+          <article class="job reveal">
+            <div class="job-head">
+              <h3 class="display">Crown Oil Ltd</h3>
+              <p class="job-meta">Senior Full-Stack Developer <span>Jul 2018 — now</span></p>
+            </div>
+            <p class="job-desc">
+              Sole lead developer for the company’s main website and its sister companies, plus several internal
+              systems. I build every site from scratch as a custom WordPress theme, on a shared back-end library I wrote
+              for form handling, phone and email verification and common utilities. Calculators and converters are HTML
+              custom elements that any of the sites can embed in their own colours. Quote requests flow into the
+              company’s CRMs. I moved the whole group onto Cloudflare, in front of AWS, and tuned its caching, which made
+              the sites far more reliable.
+            </p>
+          </article>
+          <div class="skills">
+            <div class="skill-group reveal">
+              <h4>Back end</h4>
+              <ul class="chips">
+                <li>PHP</li><li>Laravel</li><li>WordPress</li><li>MySQL</li><li>Node.js</li><li>REST APIs</li
+                ><li>Redis</li><li>PostgreSQL</li>
+              </ul>
+            </div>
+            <div class="skill-group reveal">
+              <h4>Front end</h4>
+              <ul class="chips">
+                <li>TypeScript</li><li>JavaScript</li><li>Vue</li><li>React</li><li>HTML</li><li>CSS</li><li>Sass</li
+                ><li>Tailwind CSS</li><li>PWA / Web Push</li><li>jQuery</li>
+              </ul>
+            </div>
+            <div class="skill-group reveal">
+              <h4>Infra &amp; tooling</h4>
+              <ul class="chips">
+                <li>Docker</li><li>AWS</li><li>Cloudflare</li><li>CI/CD</li><li>Git</li><li>GitHub</li><li>Vite</li
+                ><li>Composer</li><li>npm</li><li>Nginx</li><li>Apache</li><li>Caddy</li>
+              </ul>
+            </div>
+            <div class="skill-group reveal">
+              <h4>Testing</h4>
+              <ul class="chips"><li>PHPUnit</li><li>Vitest</li><li>Playwright</li></ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ───────────── FINALE ───────────── -->
+    <footer id="contact" class="finale">
+      <div class="finale-glow" aria-hidden="true"></div>
+      <div class="wrap finale-inner">
+        <svg
+          class="finale-logo reveal"
+          viewBox="0 0 130 70"
+          shape-rendering="crispEdges"
+          role="img"
+          aria-label="ME"
+        >
+          <use href="#logo-me" fill="url(#grad-logo)" />
+          <use href="#logo-cursor" fill="url(#grad-logo)" class="blink" />
+        </svg>
+        <p class="display grad-text finale-title reveal">Say hello</p>
+        <a class="btn btn-solid btn-big reveal" href="mailto:me@mark-eriksson.com">me@mark-eriksson.com</a>
+        <nav class="socials reveal" aria-label="Social">
+          <a href="https://github.com/Markshall" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+          <a href="https://www.linkedin.com/in/markeriksson/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+          <a href="https://codepen.io/Markshall" target="_blank" rel="noopener noreferrer">CodePen ↗</a>
+        </nav>
+      </div>
+      <div class="wrap finale-base">
+        <span>© <span data-year>2026</span> Mark Eriksson</span>
+        <a href="#top">Back to top ↑</a>
+      </div>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
