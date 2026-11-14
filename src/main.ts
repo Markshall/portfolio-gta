@@ -33,10 +33,11 @@ function renderProjects() {
       <article class="project" aria-labelledby="p-${p.id}">
         <div class="wrap project-inner">
           <div class="project-copy">
+            <span class="project-ghost display" aria-hidden="true">${num}</span>
             <p class="project-num reveal">${num} / ${total} · ${p.cat}</p>
-            <h3 id="p-${p.id}" class="display grad-text project-name reveal">${esc(p.name)}</h3>
-            <p class="project-role reveal">${esc(p.role)} <span>· ${years(p)}</span>${
-              p.retired ? `<span class="retired-tag">RETIRED</span>` : ""
+            <h3 id="p-${p.id}" class="display project-name reveal">${esc(p.name)}</h3>
+            <p class="project-role display reveal">${esc(p.role)} <span>· ${years(p)}</span>${
+              p.retired ? `<span class="retired-tag">Retired</span>` : ""
             }</p>
             <p class="project-summary reveal">${esc(p.summary)}</p>
             <ul class="chips reveal">${p.stack.map(s => `<li>${esc(s)}</li>`).join("")}</ul>
@@ -76,17 +77,18 @@ function drawScene() {
   const r = rng(1986);
 
   const stars = $("[data-stars]");
-  for (let i = 0; i < 90; i++) {
+  for (let i = 0; i < 60; i++) {
     stars.append(
-      el("circle", { cx: r() * 1600, cy: r() * r() * 420, r: 0.6 + r() * 1.4, opacity: 0.25 + r() * 0.6 }),
+      el("circle", { cx: r() * 1600, cy: r() * r() * 230, r: 0.6 + r() * 1.3, opacity: 0.2 + r() * 0.5 }),
     );
   }
 
   const skyline = $("[data-skyline]");
   const base = 642;
   const layers = [
-    { fill: "#4a4585", min: 40, max: 120, step: [26, 60], windows: 0 },
-    { fill: "#1b1b38", min: 24, max: 190, step: [18, 52], windows: 0.18 },
+    // A hazy far row, then the downtown silhouette against the sun.
+    { fill: "#a24a92", min: 40, max: 120, step: [26, 60], windows: 0 },
+    { fill: "#2a1447", min: 24, max: 190, step: [18, 52], windows: 0.16 },
   ];
   for (const layer of layers) {
     const g = el("g", { fill: layer.fill });
@@ -102,7 +104,7 @@ function drawScene() {
         for (let wy = base - h + 8; wy < base - 8; wy += 9) {
           for (let wx = x + 4; wx < x + w - 6; wx += 7) {
             if (r() < layer.windows) {
-              g.append(el("rect", { x: wx, y: wy, width: 3, height: 4, fill: "#fdc396", opacity: 0.3 + r() * 0.5 }));
+              g.append(el("rect", { x: wx, y: wy, width: 3, height: 4, fill: "#ffe9a8", opacity: 0.35 + r() * 0.5 }));
             }
           }
         }
@@ -113,6 +115,16 @@ function drawScene() {
   }
 
   drawFronds(r);
+
+  // A loose flock crossing the sun.
+  const birds = $("[data-birds]");
+  for (let i = 0; i < 9; i++) {
+    const x = 560 + r() * 520;
+    const y = 300 + r() * 190;
+    const s = 5 + r() * 7;
+    const d = `M${x - s} ${y - s * 0.3}Q${x - s * 0.45} ${y - s * 0.75} ${x} ${y}Q${x + s * 0.45} ${y - s * 0.75} ${x + s} ${y - s * 0.3}`;
+    birds.append(el("path", { d, opacity: 0.55 + r() * 0.4 }));
+  }
 
   const ripples = $("[data-ripples]");
   for (let y = 648; y < 960; y += 6 + (y - 640) * 0.04) {
@@ -126,8 +138,8 @@ function drawScene() {
         width: w,
         height: 1.5 + t * 3,
         rx: 2,
-        fill: t < 0.45 ? "#fdc396" : "#e9639b",
-        opacity: (1 - t) * 0.65,
+        fill: t < 0.3 ? "#fff3b8" : t < 0.6 ? "#ffb26b" : "#e9639b",
+        opacity: (1 - t) * 0.8,
       }),
     );
   }
@@ -354,19 +366,51 @@ function setupReveals() {
   });
 }
 
+/* ───────────── Menu: a full-screen overlay behind the header ───────────── */
+
+let lenis: Lenis | undefined;
+
+function setupMenu() {
+  const menu = $("[data-menu]");
+  const toggle = $<HTMLButtonElement>("[data-menu-toggle]");
+  const label = $("[data-menu-label]");
+  const header = $("[data-header]");
+
+  const set = (open: boolean) => {
+    menu.classList.toggle("is-open", open);
+    menu.inert = !open;
+    header.classList.toggle("is-menu", open);
+    toggle.setAttribute("aria-expanded", String(open));
+    label.textContent = open ? "Close" : "Menu";
+    if (open) lenis?.stop();
+    else lenis?.start();
+  };
+
+  toggle.addEventListener("click", () => set(!menu.classList.contains("is-open")));
+  // Close before the link is followed, so smooth scrolling is running again when it jumps.
+  for (const a of $$("a", menu)) a.addEventListener("click", () => set(false));
+  addEventListener("keydown", e => {
+    if (e.key === "Escape" && menu.classList.contains("is-open")) {
+      set(false);
+      toggle.focus();
+    }
+  });
+}
+
 /* ───────────── Boot ───────────── */
 
 fillStats();
 renderProjects();
 drawScene();
+setupMenu();
 
 if (!reducedMotion) {
   // Load the screenshots eagerly so their heights are known before ScrollTrigger measures.
   for (const img of $$<HTMLImageElement>(".shot img")) img.loading = "eager";
 
-  const lenis = new Lenis({ lerp: 0.09, anchors: true });
-  lenis.on("scroll", ScrollTrigger.update);
-  gsap.ticker.add(t => lenis.raf(t * 1000));
+  const smooth = (lenis = new Lenis({ lerp: 0.09, anchors: true }));
+  smooth.on("scroll", ScrollTrigger.update);
+  gsap.ticker.add(t => smooth.raf(t * 1000));
   gsap.ticker.lagSmoothing(0);
 
   setupHero();

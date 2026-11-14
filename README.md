@@ -8,8 +8,8 @@ npm run dev      # http://localhost:5173
 npm run build    # type-check, then build to dist/
 ```
 
-- `index.html`: markup, the logo geometry and the scene SVG
-- `src/main.ts`: the hero reveal (GSAP ScrollTrigger + Lenis), the generated skyline and palms, scroll reveals
+- `index.html`: markup, the logo geometry, the scene SVG and the full-screen menu
+- `src/main.ts`: the hero reveal (GSAP ScrollTrigger + Lenis), the generated skyline, palms and birds, the menu, scroll reveals
 - `src/data.ts`: projects, copied from ../mark-eriksson.com
 - `public/shots/`: project screenshots, resized from ../mark-eriksson.com
 
