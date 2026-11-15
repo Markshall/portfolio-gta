@@ -195,9 +195,9 @@ function drawFronds(r: () => number) {
 
 // Logo grid units. The zoom heads into the E's upright, where it meets the middle arm,
 // so the hole keeps covering the screen as it grows.
-const LOGO_W = 240;
+const LOGO_W = 294;
 const LOGO_H = 140;
-const FOCUS = { x: 160, y: 70 };
+const FOCUS = { x: 214, y: 70 };
 // How far the solid upright around the focus reaches either side, and above and below.
 const FOCUS_HALF_W = 20;
 const FOCUS_HALF_H = 70;
