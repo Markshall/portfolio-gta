@@ -191,6 +191,34 @@ function drawFronds(r: () => number) {
   g.append(el("circle", { cx: base[0], cy: base[1], r: 12 }));
 }
 
+/* ───────────── Logo: the M opens into a VI and closes again ───────────── */
+
+// The x of the V's corners, top edge then foot, then two heights: [notch left, notch point, notch right,
+// right arm's top corner, foot, notch depth, where the left leg leaves the V, how far down the foot is].
+// The foot stops short of the baseline by enough that the outline's point ends level with the letters'.
+// As an M the V sits midway between the legs, splays wider so each leg leaves it a third of the way down,
+// and its right arm runs into the right leg; as a VI it is narrower and stands 6 units off.
+const V_AS_M = [49, 90, 131, 174.6, 90, 64.4, 45, 133];
+const V_AS_VI = [64, 85, 106, 140, 85, 48.7, 12.4, 127.5];
+
+function setupLogoMorph() {
+  const path = $<SVGPathElement>("#logo-me");
+  const d = path.getAttribute("d")!;
+  // Everything after the V is left as drawn: the I bar and the E.
+  const rest = d.slice(d.indexOf(" M"));
+  const state = { t: 0 };
+  const draw = () => {
+    const [a, b, c, e, f, n, y, v] = V_AS_M.map((m, i) => +(m + (V_AS_VI[i] - m) * state.t).toFixed(2));
+    path.setAttribute("d", `M0 0H${a}L${b} ${n}L${c} 0H${e}L${f} ${v}L34 ${y}V140H0Z${rest}`);
+  };
+  draw();
+  gsap
+    .timeline({ delay: 2.6, repeat: -1, defaults: { duration: 0.9, ease: "power3.inOut", onUpdate: draw } })
+    .to(state, { t: 1 })
+    .to(state, { t: 0 }, "+=4.5")
+    .to({}, { duration: 2.5, onUpdate: undefined });
+}
+
 /* ───────────── Hero: the logo scales out to reveal the scene ───────────── */
 
 // Logo grid units. The zoom heads into the E's upright, where it meets the middle arm,
@@ -414,6 +442,7 @@ if (!reducedMotion) {
   gsap.ticker.lagSmoothing(0);
 
   setupHero();
+  setupLogoMorph();
   setupReveals();
   addEventListener("load", () => ScrollTrigger.refresh());
 } else {
