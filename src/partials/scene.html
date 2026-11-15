@@ -1,0 +1,115 @@
+          <svg
+            class="scene"
+            data-scene
+            viewBox="0 0 1600 1000"
+            preserveAspectRatio="xMidYMid slice"
+            aria-hidden="true"
+          >
+            <defs>
+              <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#141138" />
+                <stop offset="0.16" stop-color="#34267a" />
+                <stop offset="0.32" stop-color="#7a3a9e" />
+                <stop offset="0.45" stop-color="#d2509c" />
+                <stop offset="0.54" stop-color="#f7717f" />
+                <stop offset="0.61" stop-color="#ff9d5c" />
+                <stop offset="0.66" stop-color="#ffd08a" />
+              </linearGradient>
+              <radialGradient id="sun" cx="0.5" cy="0.5" r="0.5">
+                <stop offset="0" stop-color="#fffdf0" />
+                <stop offset="0.55" stop-color="#fff3b8" />
+                <stop offset="1" stop-color="#ffd27a" />
+              </radialGradient>
+              <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#e0668f" />
+                <stop offset="0.12" stop-color="#8a3f96" />
+                <stop offset="0.42" stop-color="#2f2168" />
+                <stop offset="1" stop-color="#0c0d1b" />
+              </linearGradient>
+              <radialGradient id="haze" cx="0.5" cy="0.5" r="0.5">
+                <stop offset="0" stop-color="#fff3b8" stop-opacity="0.85" />
+                <stop offset="0.35" stop-color="#ffb26b" stop-opacity="0.45" />
+                <stop offset="1" stop-color="#ff8a5c" stop-opacity="0" />
+              </radialGradient>
+              <radialGradient
+                id="sea-glow"
+                gradientUnits="userSpaceOnUse"
+                cx="800"
+                cy="640"
+                r="620"
+                gradientTransform="translate(0 640) scale(1 0.5) translate(0 -640)"
+              >
+                <stop offset="0" stop-color="#ffd08a" stop-opacity="0.75" />
+                <stop offset="0.5" stop-color="#ff8a5c" stop-opacity="0.25" />
+                <stop offset="1" stop-color="#ff8a5c" stop-opacity="0" />
+              </radialGradient>
+              <linearGradient id="cloud-hi" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#6d3f9c" />
+                <stop offset="1" stop-color="#e86aa6" />
+              </linearGradient>
+              <linearGradient id="cloud-lo" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#c2508f" />
+                <stop offset="1" stop-color="#ffc27a" />
+              </linearGradient>
+              <symbol id="palm" viewBox="0 0 400 800" overflow="visible">
+                <path d="M188 800 C 182 600, 168 400, 204 128 L 220 130 C 196 400, 214 600, 226 800 Z" />
+                <g data-fronds></g>
+              </symbol>
+            </defs>
+
+            <g data-layer="sky">
+              <rect width="1600" height="1000" fill="url(#sky)" />
+              <g data-stars fill="#fee8ea"></g>
+              <ellipse cx="800" cy="640" rx="900" ry="330" fill="url(#haze)" />
+              <circle cx="800" cy="596" r="120" fill="url(#sun)" />
+              <!-- Cloud streaks: violet up high, lit orange near the horizon -->
+              <g fill="url(#cloud-hi)" opacity="0.6">
+                <ellipse cx="250" cy="250" rx="330" ry="20" />
+                <ellipse cx="420" cy="282" rx="230" ry="12" />
+                <ellipse cx="1290" cy="212" rx="360" ry="22" />
+                <ellipse cx="1130" cy="246" rx="220" ry="11" />
+                <ellipse cx="800" cy="150" rx="260" ry="12" />
+                <ellipse cx="620" cy="336" rx="200" ry="9" />
+              </g>
+              <g fill="url(#cloud-lo)" opacity="0.75">
+                <ellipse cx="330" cy="430" rx="340" ry="16" />
+                <ellipse cx="520" cy="462" rx="210" ry="9" />
+                <ellipse cx="1220" cy="410" rx="320" ry="15" />
+                <ellipse cx="1060" cy="446" rx="230" ry="9" />
+                <ellipse cx="840" cy="388" rx="170" ry="7" />
+                <ellipse cx="180" cy="520" rx="260" ry="8" />
+                <ellipse cx="1430" cy="508" rx="280" ry="9" />
+              </g>
+              <g data-birds fill="none" stroke="#2a1447" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></g>
+            </g>
+
+            <g data-layer="city">
+              <g data-skyline></g>
+            </g>
+
+            <g data-layer="sea">
+              <rect y="640" width="1600" height="360" fill="url(#sea)" />
+              <rect y="640" width="1600" height="360" fill="url(#sea-glow)" />
+              <g data-ripples></g>
+            </g>
+
+            <g data-layer="palms" fill="#120a26">
+              <use href="#palm" x="-120" y="190" width="520" height="1040" />
+              <use href="#palm" x="60" y="380" width="340" height="680" transform="rotate(-6 230 720)" />
+              <g transform="translate(1600 0) scale(-1 1)">
+                <use href="#palm" x="-160" y="150" width="560" height="1120" />
+              </g>
+              <use href="#palm" x="1160" y="420" width="320" height="640" transform="rotate(5 1320 760)" />
+            </g>
+
+            <rect width="1600" height="1000" fill="url(#vignette)" />
+            <defs>
+              <linearGradient id="vignette" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#0c0d1b" stop-opacity="0.3" />
+                <stop offset="0.3" stop-color="#0c0d1b" stop-opacity="0" />
+                <stop offset="0.5" stop-color="#0c0d1b" stop-opacity="0" />
+                <stop offset="0.8" stop-color="#0c0d1b" stop-opacity="0.78" />
+                <stop offset="1" stop-color="#0c0d1b" stop-opacity="1" />
+              </linearGradient>
+            </defs>
+          </svg>

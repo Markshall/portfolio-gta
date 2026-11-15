@@ -1,0 +1,514 @@
+/* ───────────── Loading screen ───────────── */
+
+.loader {
+  display: none;
+}
+
+.js:not(.no-loader) .loader {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(70% 50% at 50% 100%, rgb(255 157 92 / 0.45), transparent 70%),
+    radial-gradient(60% 50% at 100% 0%, rgb(141 136 203 / 0.3), transparent 70%),
+    linear-gradient(180deg, #0c0d1b 0%, #1c1a4a 40%, #5d3296 75%, #c14a9c 100%);
+  transition:
+    opacity 0.8s,
+    visibility 0s 0.8s;
+  /* If the script never runs, get out of the way anyway. */
+  animation: loader-failsafe 0s 10s forwards;
+}
+
+.loader.is-done {
+  opacity: 0;
+  visibility: hidden;
+}
+
+@keyframes loader-failsafe {
+  to {
+    visibility: hidden;
+  }
+}
+
+.loader-glow {
+  position: absolute;
+  left: 50%;
+  bottom: -30vmin;
+  width: 120vmin;
+  aspect-ratio: 1;
+  translate: -50% 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(255 243 184 / 0.7), rgb(255 157 92 / 0.25) 35%, transparent 65%);
+  animation: loader-breathe 3s ease-in-out infinite alternate;
+}
+
+/* The logo drifts closer while it waits. */
+.loader-logo {
+  position: relative;
+  width: min(460px, 70vw);
+  height: auto;
+  filter: drop-shadow(0 0 40px rgb(233 99 155 / 0.6));
+  animation: loader-drift 6s cubic-bezier(0.2, 0.6, 0.3, 1) forwards;
+}
+
+@keyframes loader-drift {
+  from {
+    scale: 0.92;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  to {
+    scale: 1.06;
+  }
+}
+
+@keyframes loader-breathe {
+  to {
+    opacity: 0.65;
+    scale: 1.06;
+  }
+}
+
+.loader-foot {
+  position: absolute;
+  inset: auto 0 0;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 0 var(--gutter) clamp(28px, 6vh, 56px);
+}
+
+.loader-tip {
+  display: flex;
+  gap: 12px;
+  max-width: 34em;
+  margin: 0;
+  padding: 14px 18px;
+  border-radius: 6px;
+  background: rgb(12 13 27 / 0.78);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+.loader-tip b {
+  flex: none;
+  font: 400 1rem / 1.3 var(--font-display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--lime);
+}
+
+.loader-tip span.is-in {
+  animation: loader-tip 0.5s var(--ease-out);
+}
+
+@keyframes loader-tip {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+  }
+}
+
+.loader-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font: 400 clamp(1.4rem, 2.4vw, 2rem) var(--font-display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cream);
+  white-space: nowrap;
+}
+
+.loader-status i {
+  width: 22px;
+  height: 22px;
+  border: 3px solid rgb(255 249 203 / 0.25);
+  border-top-color: var(--cream);
+  border-radius: 50%;
+  animation: loader-spin 0.8s linear infinite;
+}
+
+@keyframes loader-spin {
+  to {
+    rotate: 1turn;
+  }
+}
+
+.loader-bar {
+  position: absolute;
+  inset: auto 0 0;
+  height: 4px;
+  background: rgb(255 249 203 / 0.12);
+}
+
+.loader-bar i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--rose), var(--orange), var(--sun));
+  scale: 0 1;
+  transform-origin: left;
+  transition: scale 0.3s;
+}
+
+@media (max-width: 640px) {
+  .loader-foot {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+  .loader-status {
+    align-self: end;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .loader {
+    display: none !important;
+  }
+}
+
+/* ───────────── Wanted level ───────────── */
+
+.wanted {
+  display: none;
+}
+
+.js .wanted {
+  display: flex;
+  gap: 3px;
+  margin-left: auto;
+}
+
+.wanted svg {
+  width: 22px;
+  height: 22px;
+  overflow: visible;
+  transform-box: fill-box;
+  transform-origin: center;
+  fill: rgb(12 13 27 / 0.35);
+  stroke: rgb(255 249 203 / 0.35);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+  transition:
+    fill 0.3s,
+    stroke 0.3s;
+}
+
+.wanted svg.is-lit {
+  fill: #fff;
+  stroke: #120a26;
+  stroke-width: 2;
+  filter: drop-shadow(0 0 6px rgb(255 249 203 / 0.6));
+}
+
+.wanted.is-max svg {
+  animation: wanted-flash 0.9s steps(1) infinite;
+}
+
+.wanted.is-max svg:nth-child(even) {
+  animation-delay: -0.45s;
+}
+
+@keyframes wanted-flash {
+  0% {
+    fill: #ff4d5e;
+  }
+  50% {
+    fill: #4f7cf0;
+  }
+}
+
+@media (max-width: 480px) {
+  .wanted svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* Red and blue lights washing in from the edges of the screen. Slow enough to stay well under three
+   flashes a second. */
+.siren {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+
+.siren::before,
+.siren::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  animation: siren 0.9s ease-in-out infinite;
+}
+
+.siren::before {
+  box-shadow: inset 90px 0 120px -60px rgb(255 50 70 / 0.55);
+}
+
+.siren::after {
+  box-shadow: inset -90px 0 120px -60px rgb(60 110 255 / 0.55);
+  animation-delay: -0.45s;
+}
+
+.siren.is-on {
+  opacity: 1;
+}
+
+@keyframes siren {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ───────────── Minimap ───────────── */
+
+.hud {
+  display: none;
+}
+
+.js .hud {
+  position: fixed;
+  left: var(--gutter);
+  bottom: clamp(16px, 4vh, 36px);
+  z-index: 40;
+  display: block;
+  transition:
+    translate 0.6s var(--ease-out),
+    opacity 0.6s;
+}
+
+.hud.is-hidden {
+  translate: 0 140%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.minimap {
+  position: relative;
+  width: clamp(96px, 11vw, 148px);
+  aspect-ratio: 1;
+  filter: drop-shadow(0 10px 24px rgb(0 0 0 / 0.55));
+}
+
+.minimap-art {
+  width: 100%;
+  height: 100%;
+}
+
+.map-rim {
+  fill: #120a26;
+  stroke: rgb(255 249 203 / 0.5);
+  stroke-width: 2;
+}
+
+.map-ground {
+  fill: #1c1a3d;
+}
+
+.map-blocks {
+  fill: #2a2854;
+}
+
+.map-sea {
+  fill: #2f4a8a;
+  opacity: 0.8;
+}
+
+.map-road path {
+  fill: none;
+  stroke-linecap: round;
+}
+
+.map-road path:first-child {
+  stroke: #6b6896;
+  stroke-width: 11;
+}
+
+.map-road path:last-child {
+  stroke: #fff9cb;
+  stroke-width: 1.2;
+  stroke-dasharray: 5 5;
+  opacity: 0.6;
+}
+
+[data-map-dots] circle {
+  fill: #120a26;
+  stroke: var(--pink);
+  stroke-width: 1.5;
+  transition: fill 0.4s;
+}
+
+[data-map-dots] circle.is-done {
+  fill: var(--lime);
+  stroke: #120a26;
+}
+
+.map-player {
+  fill: #fff;
+  stroke: #120a26;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.blip {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  translate: -50% -50%;
+  border: 2px solid #120a26;
+  border-radius: 50%;
+  background: var(--c);
+  font: 400 0.72rem / 1 var(--font-display);
+  color: #120a26;
+  text-decoration: none;
+  transition: scale 0.25s var(--ease-out);
+}
+
+.blip.is-here {
+  box-shadow: 0 0 0 3px rgb(255 255 255 / 0.85);
+}
+
+.blip:hover,
+.blip:focus-visible {
+  scale: 1.25;
+  z-index: 1;
+}
+
+/* The blip's name, on hover. */
+.blip::after {
+  content: attr(data-label);
+  position: absolute;
+  left: calc(100% + 8px);
+  padding: 0.35em 0.7em;
+  border-radius: 6px;
+  background: rgb(12 13 27 / 0.88);
+  font: 800 0.6rem var(--font-body);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--cream);
+  opacity: 0;
+  translate: -4px 0;
+  pointer-events: none;
+  transition:
+    opacity 0.2s,
+    translate 0.2s;
+}
+
+.blip:hover::after,
+.blip:focus-visible::after {
+  opacity: 1;
+  translate: 0 0;
+}
+
+@media (max-width: 640px) {
+  .blip {
+    width: 18px;
+    height: 18px;
+    font-size: 0.6rem;
+  }
+}
+
+/* ───────────── Mission passed ───────────── */
+
+.mission {
+  position: fixed;
+  inset: 0 0 auto;
+  top: 34%;
+  /* Under the header and the phone. */
+  z-index: 44;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.mission-inner {
+  display: grid;
+  justify-items: center;
+  padding: 22px var(--gutter) 26px;
+  text-align: center;
+  background: linear-gradient(90deg, transparent, rgb(12 13 27 / 0.82) 20%, rgb(12 13 27 / 0.82) 80%, transparent);
+}
+
+.mission-title,
+.mission-name {
+  margin: 0;
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  line-height: 0.95;
+}
+
+.mission-title {
+  font-size: clamp(2.8rem, 8vw, 6.5rem);
+  letter-spacing: 0.02em;
+  background: linear-gradient(180deg, #fffdf0 10%, #ffd08a 55%, #ff9d5c 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 3px 0 #120a26) drop-shadow(0 0 22px rgb(255 157 92 / 0.45));
+}
+
+.mission-name {
+  margin-top: 0.3rem;
+  font-size: clamp(1.3rem, 3vw, 2.2rem);
+  color: var(--cream);
+}
+
+.mission-respect {
+  margin: 0.5rem 0 0;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--lime);
+}
+
+.mission-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 28px;
+  margin: 0.9rem 0 0;
+}
+
+.mission-stats div {
+  display: flex;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.mission-stats dt {
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.mission-stats dd {
+  margin: 0;
+  font-weight: 800;
+  color: var(--text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wanted.is-max svg,
+  .siren::before,
+  .siren::after {
+    animation: none;
+  }
+}

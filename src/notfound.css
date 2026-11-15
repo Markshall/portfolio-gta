@@ -1,0 +1,119 @@
+/* ───────────── 404: the scene drains to grey and zooms in a touch, then the verdict stamps down ───────────── */
+
+.dead {
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.dead-stage {
+  position: absolute;
+  inset: 0;
+  animation:
+    dead-drain 1.6s 0.2s ease-in forwards,
+    dead-zoom 7s cubic-bezier(0.15, 0.6, 0.2, 1) forwards;
+}
+
+/* A red wash for Wasted, a blue one for Busted, over the grey. */
+.dead-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(80% 70% at 50% 50%, transparent 30%, rgb(12 13 27 / 0.75));
+  opacity: 0;
+  animation: dead-fade 1.6s 0.4s forwards;
+}
+
+@keyframes dead-drain {
+  to {
+    filter: grayscale(1) contrast(1.15) brightness(0.72);
+  }
+}
+
+@keyframes dead-zoom {
+  from {
+    scale: 1;
+  }
+  to {
+    scale: 1.1;
+  }
+}
+
+@keyframes dead-fade {
+  to {
+    opacity: 1;
+  }
+}
+
+.dead-copy {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 1.2rem;
+  padding: var(--gutter);
+  text-align: center;
+}
+
+.dead-word {
+  --word: #e8384f;
+  margin: 0;
+  font: 400 clamp(4.5rem, 19vw, 14rem) / 0.9 var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--word);
+  -webkit-text-stroke: 0.035em #120a26;
+  paint-order: stroke fill;
+  text-shadow: 0 0.05em 0.25em rgb(0 0 0 / 0.6);
+  opacity: 0;
+  animation: dead-stamp 0.5s 1.5s cubic-bezier(0.3, 1.6, 0.5, 1) forwards;
+}
+
+.is-busted .dead-word {
+  --word: #4f7cf0;
+}
+
+@keyframes dead-stamp {
+  from {
+    opacity: 0;
+    scale: 1.6;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+.dead-sub,
+.dead-btn {
+  opacity: 0;
+  animation: dead-fade 0.8s 2.1s forwards;
+}
+
+.dead-sub {
+  margin: 0;
+  max-width: 30em;
+  font-weight: 800;
+  color: var(--cream);
+  text-shadow: 0 1px 12px rgb(12 13 27 / 0.9);
+}
+
+.dead-btn {
+  margin-top: 0.6rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dead-stage {
+    animation: none;
+    filter: grayscale(1) contrast(1.15) brightness(0.72);
+  }
+  .dead-stage::after,
+  .dead-word,
+  .dead-sub,
+  .dead-btn {
+    animation: none;
+    opacity: 1;
+  }
+}
