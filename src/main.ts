@@ -197,9 +197,10 @@ function drawFronds(r: () => number) {
 // The foot stops short of the baseline, and the top-left corner short of the left edge, by enough that
 // the outline's points there end level with the outline of the other letters.
 // As an M the V sits midway between the legs, its arms running into both. As a VI it has slid left to
-// stand where the left leg was, and only its top-right corner touches the I's top-left.
+// stand where the left leg was, a separate letter beside the I: its top-right corner stops 6 units short
+// of the I's top-left, so each keeps its own white rim and only the darker outline bridges them.
 const V_AS_M = [6.6, 49, 90, 131, 173.4, 65.4, 133];
-const V_AS_VI = [5.4, 45.4, 76.2, 107, 147, 57, 131];
+const V_AS_VI = [5.1, 45.1, 72.55, 100, 140, 53.3, 130.5];
 const LEG_W = 34;
 // How much of the left leg stays visible in the VI, as a ghost of the M.
 const LEG_GHOST = 0.22;
