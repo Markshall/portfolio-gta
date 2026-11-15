@@ -5,9 +5,12 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "export:logo": "node scripts/export-logo.mjs"
   },
   "devDependencies": {
+    "playwright-core": "^1.65.1",
+    "sharp": "^0.35.5",
     "typescript": "^7.0.2",
     "vite": "^8.3.8"
   },
