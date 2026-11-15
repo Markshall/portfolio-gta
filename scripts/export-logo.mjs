@@ -3,8 +3,8 @@
 //   npm run export:logo            WebP 1600px wide
 //   npm run export:logo -- 800     WebP 800px wide
 //
-// The SVG is built from the logo's shapes and timings, with the script-drawn palm fronds lifted from the
-// running site. The WebP is that SVG rendered frame by frame in headless Chrome, so the two always match.
+// The SVG is built from the logo's shapes and timings in src/logo.ts, which the site uses too, with the
+// script-drawn palm fronds and the fixed parts of the logo's paths lifted from the running site. The WebP is that SVG rendered frame by frame in headless Chrome, so the two always match.
 // Needs Google Chrome installed.
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
@@ -12,24 +12,24 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright-core";
 import sharp from "sharp";
 import { createServer } from "vite";
+import {
+  DIM_DELAY,
+  DIM_DURATION,
+  FIRST_MORPH,
+  HOLD_M,
+  HOLD_VI,
+  LEG_GHOST,
+  LEG_REST,
+  MORPH,
+  logoPaths,
+  pathTail,
+} from "../src/logo.ts";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const outDir = resolve(root, "exports");
 const webpWidth = Number(process.argv[2] ?? 1600);
 if (!Number.isInteger(webpWidth) || webpWidth < 1) throw new Error(`Not a pixel width: ${process.argv[2]}`);
 
-// ── The logo's shapes and timings. Keep in step with setupLogoMorph() in src/main.ts. ──
-const V_AS_M = [6.6, 49, 90, 131, 173.4, 65.4, 133];
-const V_AS_VI = [5.1, 45.1, 72.55, 100, 140, 53.3, 130.5];
-const LEG_W = 34;
-const LEG_GHOST = 0.22;
-const LEG_REST = 0.1;
-const HOLD_M = 6;
-const HOLD_VI = 2.5;
-const MORPH = 1.1;
-const FIRST_MORPH = 3;
-const BARE_TAIL = " M146 0H180V140H146Z";
-const LEGGED_TAIL = " M146 0H180V140H146Z M194 140V0H294V32H234V54H280V86H234V108H294V140Z";
 // The logo's 294×140 grid plus room for the outline.
 const VIEW = { x: -10, y: -10, w: 314, h: 160 };
 // Frames, and SVG keyframes, per second while the logo is changing.
@@ -38,7 +38,7 @@ const FPS = 30;
 // One loop, in seconds from the start of the M's hold.
 const CYCLE = HOLD_M + MORPH + HOLD_VI + MORPH;
 const OUT = [HOLD_M, HOLD_M + MORPH]; // the M opens into the VI
-const DIM = [OUT[1] + 0.3, OUT[1] + 0.3 + 0.8]; // the leg's and the E's ghosts dim
+const DIM = [OUT[1] + DIM_DELAY, OUT[1] + DIM_DELAY + DIM_DURATION]; // the leg's and the E's ghosts dim
 const BACK = [HOLD_M + MORPH + HOLD_VI, CYCLE]; // the VI closes into the M
 // Playback starts this far into the loop, so the first change comes FIRST_MORPH seconds in, as on the site.
 const PHASE = HOLD_M - FIRST_MORPH;
@@ -62,19 +62,13 @@ function stateAt(time) {
   return { t: 1 - p, leg: lerp(LEG_REST, 1, p) };
 }
 
-function shapesAt(t) {
-  const [x, a, b, c, e, n, v] = V_AS_M.map((m, i) => +(m + (V_AS_VI[i] - m) * t).toFixed(2));
-  const y = +((v * (LEG_W - x)) / (b - x)).toFixed(2);
-  const top = `H${a}L${b} ${n}L${c} 0H${e}L${b} ${v}`;
-  return { bare: `M${x} 0${top}Z${BARE_TAIL}`, legged: `M0 0${top}L${LEG_W} ${y}V140H0Z${LEGGED_TAIL}` };
-}
-
 const steps = ([a, b]) => Math.round((b - a) * FPS);
 
 /* ───────────── The SVG ───────────── */
 
-// The palm silhouette, with the fronds the site's script draws into it.
-async function readPalm(browser) {
+// From the running site: the palm silhouette, with the fronds the site's script draws into it, and the
+// parts of the two logo paths that the morph leaves as drawn.
+async function readSite(browser) {
   const server = await createServer({ root, logLevel: "silent", server: { port: 0, host: "127.0.0.1" } });
   await server.listen();
   try {
@@ -86,7 +80,11 @@ async function readPalm(browser) {
       for (const node of symbol.querySelectorAll("*")) {
         for (const attr of [...node.attributes]) if (attr.name.startsWith("data-")) node.removeAttribute(attr.name);
       }
-      return new XMLSerializer().serializeToString(symbol).replace(/ xmlns="[^"]*"/g, "");
+      return {
+        palm: new XMLSerializer().serializeToString(symbol).replace(/ xmlns="[^"]*"/g, ""),
+        bare: document.querySelector("#logo-me").getAttribute("d"),
+        legged: document.querySelector("#logo-m").getAttribute("d"),
+      };
     });
   } finally {
     await server.close();
@@ -105,7 +103,8 @@ function animate(attr, stretches, value) {
   return `<animate attributeName="${attr}" dur="${CYCLE}s" begin="-${PHASE}s" repeatCount="indefinite" calcMode="linear" keyTimes="${keyTimes}" values="${values}" />`;
 }
 
-function buildSvg(palm) {
+function buildSvg({ palm, bare, legged }) {
+  const shapesAt = (t) => logoPaths(t, pathTail(bare), pathTail(legged));
   const home = shapesAt(0);
   const layer = (shape, clip) => `<g fill="none" stroke-linejoin="miter" stroke-miterlimit="4">
       <use href="#${shape}" stroke="#2a1150" stroke-width="16" />
@@ -210,7 +209,7 @@ async function renderWebp(browser, svg, file) {
 mkdirSync(outDir, { recursive: true });
 const browser = await chromium.launch({ channel: "chrome" });
 try {
-  const svg = buildSvg(await readPalm(browser));
+  const svg = buildSvg(await readSite(browser));
   writeFileSync(resolve(outDir, "logo-me-vi.svg"), svg);
   console.log("exports/logo-me-vi.svg");
   const { width, height } = await renderWebp(browser, svg, resolve(outDir, "logo-me-vi.webp"));

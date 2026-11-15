@@ -10,6 +10,7 @@ npm run build    # type-check, then build to dist/
 
 - `index.html`: markup, the logo geometry, the scene SVG and the full-screen menu
 - `src/main.ts`: the hero reveal (GSAP ScrollTrigger + Lenis), the generated skyline, palms and birds, the menu, scroll reveals
+- `src/logo.ts`: the logo morph's shapes and timings, shared with `scripts/export-logo.mjs`
 - `src/data.ts`: projects, copied from ../mark-eriksson.com
 - `public/shots/`: project screenshots, resized from ../mark-eriksson.com
 
