@@ -1,8 +1,8 @@
 // The HUD: the wanted level in the header, the minimap in the corner, and the "Mission passed" banner
 // that shows as each project scrolls past.
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { PROJECTS, type Project, years } from "./data.ts";
+import { maxScroll, whenPast } from "./scroll.ts";
 
 const $ = <T extends Element = HTMLElement>(sel: string, root: ParentNode = document) => root.querySelector<T>(sel)!;
 const $$ = <T extends Element = HTMLElement>(sel: string, root: ParentNode = document) => [
@@ -12,12 +12,11 @@ const SVG_NS = "http://www.w3.org/2000/svg";
 
 /** How far down the page a section starts, from 0 to 1. */
 function pageFraction(el: Element) {
-  const max = ScrollTrigger.maxScroll(window) || 1;
   const top = el.getBoundingClientRect().top + scrollY;
-  return Math.min(1, Math.max(0, top / max));
+  return Math.min(1, Math.max(0, top / maxScroll()));
 }
 
-const pageProgress = () => Math.min(1, Math.max(0, scrollY / (ScrollTrigger.maxScroll(window) || 1)));
+const pageProgress = () => Math.min(1, Math.max(0, scrollY / maxScroll()));
 
 /* ───────────── Wanted level ───────────── */
 
@@ -54,7 +53,7 @@ function setupWanted(reducedMotion: boolean) {
   };
 
   for (const a of $$<HTMLAnchorElement>('a[href="#contact"], a[href^="mailto:"]')) a.addEventListener("click", maxOut);
-  ScrollTrigger.create({ trigger: ".finale-title", start: "top 80%", onEnter: maxOut });
+  whenPast($(".finale-title"), "top", 0.8, maxOut, false);
 
   return (progress: number) => {
     if (!wanted.classList.contains("is-max")) set(Math.ceil(progress * 5 - 0.05));
@@ -140,8 +139,6 @@ function setupMinimap() {
       dots[i].setAttribute("cy", p.y.toFixed(1));
     });
   };
-  layout();
-  ScrollTrigger.addEventListener("refresh", layout);
 
   const done = (i: number) => dots[i]?.classList.add("is-done");
 
@@ -158,7 +155,7 @@ function setupMinimap() {
     blips.forEach((blip, i) => blip.a.classList.toggle("is-here", i === here));
   };
 
-  return { update, done };
+  return { update, done, layout };
 }
 
 /* ───────────── Mission passed ───────────── */
@@ -217,7 +214,7 @@ function setupMissions(onDone: (i: number) => void, reducedMotion: boolean) {
   };
 
   $$(".project").forEach((project, i) =>
-    ScrollTrigger.create({ trigger: project, start: "bottom 70%", once: true, onEnter: () => pass(i) }),
+    whenPast(project, "bottom", 0.7, () => pass(i)),
   );
 }
 
@@ -233,6 +230,14 @@ export function setupHud(reducedMotion: boolean) {
     wanted(progress);
     map.update(progress);
   };
-  ScrollTrigger.create({ start: 0, end: "max", onUpdate: update, onRefresh: update });
-  update();
+  addEventListener("scroll", update, { passive: true });
+
+  // The map is laid out from where the sections sit, so redo it whenever the page changes size.
+  const relayout = () => {
+    map.layout();
+    update();
+  };
+  new ResizeObserver(relayout).observe(document.body);
+  addEventListener("resize", relayout);
+  relayout();
 }

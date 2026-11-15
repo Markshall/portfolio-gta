@@ -1,7 +1,6 @@
 import "./style.css";
 import "./hud.css";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import { PROJECTS, careerYears, siteHref, years } from "./data.ts";
 import {
@@ -19,8 +18,7 @@ import {
 import { setupHud } from "./hud.ts";
 import { runLoader } from "./loader.ts";
 import { drawScene } from "./scene.ts";
-
-gsap.registerPlugin(ScrollTrigger);
+import { whenPast } from "./scroll.ts";
 
 const $ = <T extends Element = HTMLElement>(sel: string, root: ParentNode = document) => root.querySelector<T>(sel)!;
 const $$ = <T extends Element = HTMLElement>(sel: string, root: ParentNode = document) => [
@@ -189,28 +187,16 @@ function setupHero(ready: Promise<void>) {
 
   // The header comes in once the scene is revealed; the HUD once the hero's buttons have scrolled away,
   // so the minimap never sits on them.
-  const chrome = [$("[data-header]")];
+  const header = $("[data-header]");
   const hud = $("[data-hud]");
-  for (const node of [...chrome, hud]) node.classList.add("is-hidden");
+  for (const node of [header, hud]) node.classList.add("is-hidden");
 
   const copy = $("[data-hero-copy]");
   gsap.set(copy, { autoAlpha: 0 });
 
-  const tl = gsap.timeline({
-    defaults: { ease: "none" },
-    scrollTrigger: {
-      trigger: "[data-hero]",
-      start: "top top",
-      end: () => `+=${innerHeight * 2.6}`,
-      pin: true,
-      scrub: 0.8,
-      anticipatePin: 1,
-      invalidateOnRefresh: true,
-      onUpdate: self => {
-        for (const node of chrome) node.classList.toggle("is-hidden", self.progress < 0.82);
-      },
-    },
-  });
+  // Played by the scroll, not the clock: the stage is sticky inside the tall hero (see the CSS), and
+  // how far the hero has scrolled past sets how far through this the page is.
+  const tl = gsap.timeline({ paused: true, defaults: { ease: "none" } });
 
   tl.to("[data-intro]", { opacity: 0, y: -20, duration: 0.12 }, 0)
     .to("[data-logo-fill]", { opacity: 0, duration: 0.18, ease: "power1.in" }, 0.02)
@@ -228,101 +214,63 @@ function setupHero(ready: Promise<void>) {
     )
     .to({}, { duration: 0.08 });
 
-  // Made after the pin above, so its start allows for the pin's extra scroll.
-  ScrollTrigger.create({
-    trigger: ".statement",
-    start: "top 75%",
-    end: "max",
-    onToggle: self => hud.classList.toggle("is-hidden", !self.isActive),
-  });
+  const hero = $("[data-hero]");
+  const statement = $(".statement");
+  let progress = -1;
+  const onScroll = () => {
+    const travel = hero.offsetHeight - innerHeight;
+    const p = travel > 0 ? Math.min(1, Math.max(0, -hero.getBoundingClientRect().top / travel)) : 1;
+    if (p !== progress) {
+      // The timeline trails the scroll a little, to take the edges off; on load it starts in place.
+      if (progress < 0) tl.progress(p);
+      else gsap.to(tl, { progress: p, duration: 0.8, ease: "power3.out", overwrite: true });
+      progress = p;
+    }
+    header.classList.toggle("is-hidden", p < 0.82);
+    const statementTop = statement.getBoundingClientRect().top;
+    hud.classList.toggle("is-hidden", statementTop > innerHeight * 0.75);
+    header.classList.toggle("is-solid", statementTop <= 0);
+  };
+  addEventListener("scroll", onScroll, { passive: true });
+  addEventListener("resize", onScroll);
+  onScroll();
 }
 
 /* ───────────── Scroll reveals ───────────── */
 
 function setupReveals() {
+  // Each node waits 70px low, so its top crosses this line about when its resting place is 88% down.
   for (const node of $$(".reveal")) {
-    gsap.from(node, {
-      y: 70,
-      opacity: 0,
-      duration: 1.1,
-      ease: "power3.out",
-      scrollTrigger: { trigger: node, start: "top 88%", once: true },
-    });
+    gsap.set(node, { y: 70, opacity: 0 });
+    whenPast(node, "top", 0.95, () => gsap.to(node, { y: 0, opacity: 1, duration: 1.1, ease: "power3.out" }));
   }
 
-  // The statement lights up word by word as it scrolls past.
+  // The statement lights up word by word as it scrolls past: the CSS does it, from each word's place
+  // in the line (--i of --n).
   const statement = $("[data-words]");
-  statement.innerHTML = statement
-    .textContent!.trim()
-    .split(/\s+/)
-    .map(w => `<span class="w">${esc(w)} </span>`)
-    .join("");
-  gsap.to($$(".w", statement), {
-    opacity: 1,
-    color: "#fff9cb",
-    stagger: 0.1,
-    ease: "none",
-    scrollTrigger: { trigger: statement, start: "top 80%", end: "bottom 45%", scrub: true },
-  });
+  const words = statement.textContent!.trim().split(/\s+/);
+  statement.style.setProperty("--n", String(words.length));
+  statement.innerHTML = words.map((w, i) => `<span class="w" style="--i: ${i}">${esc(w)} </span>`).join("");
 
   // Count the stats up.
   for (const dd of $$(".stats dd")) {
     const target = dd.querySelector("span") ?? dd;
     const end = Number(target.textContent);
     const counter = { v: 0 };
-    gsap.to(counter, {
-      v: end,
-      duration: 1.6,
-      ease: "power2.out",
-      scrollTrigger: { trigger: dd, start: "top 90%", once: true },
-      onUpdate: () => (target.textContent = String(Math.round(counter.v))),
-    });
-  }
-
-  // Each screenshot holds at the top of the site until its frame is mostly on screen,
-  // then scrolls through the whole page, reaching the bottom as the frame starts to leave the screen.
-  for (const project of $$(".project")) {
-    const frame = $(".shot-view", project);
-    const img = $<HTMLImageElement>("img", frame);
-    gsap.fromTo(
-      img,
-      { y: 0 },
-      {
-        y: () => Math.min(0, frame.clientHeight - img.offsetHeight),
-        ease: "none",
-        scrollTrigger: {
-          trigger: frame,
-          start: "top 55%",
-          end: "top top",
-          scrub: 0.6,
-          invalidateOnRefresh: true,
-        },
-      },
-    );
-    img.addEventListener("load", () => ScrollTrigger.refresh(), { once: true });
-
-    // The big name drifts against the scroll, for depth.
-    gsap.fromTo(
-      $(".project-name", project),
-      { yPercent: 18 },
-      { yPercent: -18, ease: "none", scrollTrigger: { trigger: project, scrub: true } },
+    target.textContent = "0";
+    whenPast(dd, "top", 0.9, () =>
+      gsap.to(counter, {
+        v: end,
+        duration: 1.6,
+        ease: "power2.out",
+        onUpdate: () => (target.textContent = String(Math.round(counter.v))),
+      }),
     );
   }
 
   // The character's stat bars fill as the card comes up.
-  ScrollTrigger.create({
-    trigger: "[data-char]",
-    start: "top 70%",
-    once: true,
-    onEnter: () => $("[data-char]").classList.add("is-on"),
-  });
-
-  ScrollTrigger.create({
-    trigger: ".statement",
-    start: "top top",
-    end: "max",
-    toggleClass: { targets: "[data-header]", className: "is-solid" },
-  });
+  const char = $("[data-char]");
+  whenPast(char, "top", 0.7, () => char.classList.add("is-on"));
 }
 
 /* ───────────── Menu: a phone that slides up over the page ───────────── */
@@ -382,11 +330,10 @@ drawScene();
 setupMenu();
 
 if (!reducedMotion) {
-  // Load the screenshots eagerly so their heights are known before ScrollTrigger measures.
+  // Load the screenshots eagerly, so the loading screen holds until they're in.
   for (const img of $$<HTMLImageElement>(".shot img")) img.loading = "eager";
 
   const smooth = (lenis = new Lenis({ lerp: 0.09, anchors: true }));
-  smooth.on("scroll", ScrollTrigger.update);
   gsap.ticker.add(t => smooth.raf(t * 1000));
   gsap.ticker.lagSmoothing(0);
 
@@ -398,7 +345,6 @@ if (!reducedMotion) {
   setupLogoMorph();
   setupReveals();
   setupHud(false);
-  addEventListener("load", () => ScrollTrigger.refresh());
 } else {
   runLoader();
   for (const dd of $$(".site-header")) dd.classList.add("is-solid");

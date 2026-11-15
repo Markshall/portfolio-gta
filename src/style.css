@@ -571,8 +571,18 @@ a {
   height: 100svh;
 }
 
+/* With motion, the hero is a long runway and the stage sticks to the screen while it scrolls by;
+   that scroll plays the zoom (see setupHero). */
+@media (prefers-reduced-motion: no-preference) {
+  .js .hero {
+    height: 360vh;
+    height: 360svh;
+  }
+}
+
 .hero-stage {
-  position: relative;
+  position: sticky;
+  top: 0;
   height: 100vh;
   height: 100svh;
   overflow: hidden;
@@ -758,7 +768,6 @@ a {
 
 .statement-text .w {
   display: inline-block;
-  opacity: 0.16;
   white-space: pre;
 }
 
@@ -990,7 +999,8 @@ a {
   rotate: var(--tilt);
   border: 3px solid transparent;
   border-radius: 18px;
-  overflow: hidden;
+  /* Clip, not hidden: a hidden box would count as the scroller the screenshot's pan is timed against. */
+  overflow: clip;
   background:
     linear-gradient(var(--ink-2), var(--ink-2)) padding-box,
     var(--grad-rim) border-box;
@@ -1010,14 +1020,13 @@ a {
 .shot img {
   width: 100%;
   height: auto;
-  will-change: transform;
 }
 
 .shot-view {
   position: relative;
   flex: 1;
   min-height: 0;
-  overflow: hidden;
+  overflow: clip;
 }
 
 .shot-view::after {
@@ -1433,6 +1442,78 @@ a {
   text-decoration: none;
 }
 
+/* ───────────── Scroll-driven effects ─────────────
+   Tied to the scroll position by the browser. Where that isn't supported, the words are simply lit,
+   and the names and screenshots sit still. */
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) and (animation-range: cover 0% cover 100%) {
+    /* The statement lights up word by word, from when its top is 80% down the screen to when its
+       bottom is 45% down. Each word takes five steps to light, starting one step after the last. */
+    .statement-text {
+      view-timeline: --statement block;
+      view-timeline-inset: 45% 20%;
+    }
+
+    .statement-text .w {
+      opacity: 0.16;
+      animation: word-on 1ms linear both;
+      animation-timeline: --statement;
+      animation-range:
+        cover calc(var(--i) / (var(--n) + 4) * 100%)
+        cover calc((var(--i) + 5) / (var(--n) + 4) * 100%);
+    }
+
+    /* The big name drifts against the scroll, for depth. */
+    .project {
+      view-timeline: --project block;
+    }
+
+    .project-name {
+      animation: name-drift 1ms linear both;
+      animation-timeline: --project;
+    }
+
+    /* Each screenshot holds at the top of the site until its frame is mostly on screen (its top 55%
+       of the way down), then scrolls through the whole page, reaching the bottom as the frame's top
+       meets the top of the screen. */
+    .shot-view {
+      container-type: size;
+      view-timeline: --shot block;
+    }
+
+    .shot img {
+      will-change: translate;
+      animation: shot-pan 1ms linear both;
+      animation-timeline: --shot;
+      animation-range: cover 45vh exit 0%;
+    }
+  }
+}
+
+@keyframes word-on {
+  to {
+    opacity: 1;
+    color: #fff9cb;
+  }
+}
+
+@keyframes name-drift {
+  from {
+    translate: 0 18%;
+  }
+  to {
+    translate: 0 -18%;
+  }
+}
+
+@keyframes shot-pan {
+  to {
+    /* The frame's height less the image's own: its bottom edge on the frame's. */
+    translate: 0 min(0px, 100cqh - 100%);
+  }
+}
+
 /* ───────────── Reduced motion: no pin, no zoom — show the revealed scene. ───────────── */
 
 @media (prefers-reduced-motion: reduce) {
@@ -1442,9 +1523,6 @@ a {
   }
   .js .hero-copy {
     visibility: visible;
-  }
-  .statement-text .w {
-    opacity: 1;
   }
   .scroll-hint i {
     animation: none;
