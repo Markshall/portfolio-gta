@@ -202,8 +202,10 @@ function drawFronds(r: () => number) {
 const V_AS_M = [6.6, 49, 90, 131, 173.4, 65.4, 133];
 const V_AS_VI = [5.1, 45.1, 72.55, 100, 140, 53.3, 130.5];
 const LEG_W = 34;
-// How much of the left leg and the E show while the V is landing, before they fade away altogether.
+// How much of the left leg and the E show while the V is landing, and what they settle to while the VI
+// is held: just visible, so ME stays readable behind it.
 const LEG_GHOST = 0.22;
+const LEG_REST = 0.1;
 // Seconds: how long the M and the VI are each held, how long the change between them takes, and how soon
 // after the logo comes into view the first change starts.
 const HOLD_M = 6;
@@ -240,12 +242,12 @@ function setupLogoMorph() {
   };
   draw();
 
-  // ME is home. The VI is a short reveal: the V lands with the leg and the E still ghosts, then the
-  // ghosts go, so the VI is held clean and alone.
+  // ME is home. The VI is a short reveal: the V lands with the leg and the E as ghosts, which then dim
+  // further, so the VI is held lit with ME only just visible behind it.
   const loop = gsap
     .timeline({ repeat: -1, paused: true, defaults: { ease: "power3.inOut", onUpdate: draw } })
     .to(state, { t: 1, leg: LEG_GHOST, duration: MORPH }, HOLD_M)
-    .to(state, { leg: 0, duration: 0.8, ease: "power1.out" }, ">0.3")
+    .to(state, { leg: LEG_REST, duration: 0.8, ease: "power1.out" }, ">0.3")
     .to(state, { t: 0, leg: 1, duration: MORPH }, HOLD_M + MORPH + HOLD_VI);
 
   // Only run while a large logo is at rest in view: the hero's before the scroll zoom starts, or the
