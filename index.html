@@ -17,17 +17,20 @@
     <!--
       Shared logo on a 294×140 grid: a heavy, plain M and E with a blue-to-pink-to-orange fill, faint upright
       palm trees, and a white / violet / dark-purple layered outline (8 units deep).
-      #logo-me is the plain letter shape (also the window in the hero reveal); #logo-art is the full logo.
-      The M is a VI with a leg added: a wide V, whose point stops short of the baseline so its outline ends level with the rest, and whose left arm carries the M's left leg, then a
-      separate I bar standing 6 units off as the right leg. Only the outline bridges the V and the I.
+      #logo-me is the V, the I bar and the E; #logo-m is the same with the M's left leg joined to the V.
+      #logo-art draws both, the legged one on top in [data-logo-leg], so the leg alone can fade out.
+      As drawn here the logo is an M: the V sits between the legs and runs into the I. The script slides the
+      V left over the leg, fades the leg, and leaves the V's top-right corner touching the I's: a VI and an E.
     -->
     <svg width="0" height="0" style="position: absolute" aria-hidden="true">
       <defs>
         <path
           id="logo-me"
-          d="M0 0H64L85 48.7L106 0H140L85 127.5L34 12.4V140H0Z M146 0H180V140H146Z M194 140V0H294V32H234V54H280V86H234V108H294V140Z"
+          d="M6.6 0H49L90 65.4L131 0H173.4L90 133Z M146 0H180V140H146Z M194 140V0H294V32H234V54H280V86H234V108H294V140Z"
         />
+        <path id="logo-m" d="M0 0H49L90 65.4L131 0H173.4L90 133L34 43.7V140H0Z M146 0H180V140H146Z M194 140V0H294V32H234V54H280V86H234V108H294V140Z" />
         <clipPath id="logo-clip"><use href="#logo-me" /></clipPath>
+        <clipPath id="logo-m-clip"><use href="#logo-m" /></clipPath>
         <linearGradient id="grad-logo" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="36" y2="140">
           <stop offset="0" stop-color="#3f6fe0" />
           <stop offset="0.28" stop-color="#8a5ce0" />
@@ -68,24 +71,26 @@
           <stop offset="1" stop-color="#ffc24a" />
         </linearGradient>
         <g id="logo-art">
-          <!-- Outline, outside in: dark purple, violet, white. Each is a stroke whose inner half the fill covers. -->
+          <!--
+            Each layer: the outline, outside in (dark purple, violet, white; strokes whose inner half the fill
+            covers), the fill, then upright palm silhouettes in a darker tint of the fill.
+          -->
           <g fill="none" stroke-linejoin="miter" stroke-miterlimit="4">
             <use href="#logo-me" stroke="#2a1150" stroke-width="16" />
             <use href="#logo-me" stroke="url(#logo-edge)" stroke-width="9" />
             <use href="#logo-me" stroke="#fff" stroke-width="3" />
           </g>
           <use href="#logo-me" fill="url(#grad-logo)" />
-          <!-- Upright palm silhouettes, reusing the scene's palm: a darker tint of the fill all the way down -->
-          <rect
-            x="0"
-            y="0"
-            width="294"
-            height="140"
-            fill="url(#logo-palm-tone)"
-            mask="url(#logo-palms)"
-            clip-path="url(#logo-clip)"
-            opacity="0.5"
-          />
+          <rect x="0" y="0" width="294" height="140" fill="url(#logo-palm-tone)" mask="url(#logo-palms)" clip-path="url(#logo-clip)" opacity="0.5" />
+          <g data-logo-leg>
+            <g fill="none" stroke-linejoin="miter" stroke-miterlimit="4">
+              <use href="#logo-m" stroke="#2a1150" stroke-width="16" />
+              <use href="#logo-m" stroke="url(#logo-edge)" stroke-width="9" />
+              <use href="#logo-m" stroke="#fff" stroke-width="3" />
+            </g>
+            <use href="#logo-m" fill="url(#grad-logo)" />
+            <rect x="0" y="0" width="294" height="140" fill="url(#logo-palm-tone)" mask="url(#logo-palms)" clip-path="url(#logo-m-clip)" opacity="0.5" />
+          </g>
         </g>
       </defs>
     </svg>
@@ -94,6 +99,7 @@
       <a href="#top" class="brand" aria-label="Mark Eriksson, back to top">
         <svg viewBox="0 0 294 140" width="59" height="28" aria-hidden="true">
           <use href="#logo-me" fill="url(#grad-logo)" />
+          <use data-logo-leg href="#logo-m" fill="url(#grad-logo)" />
         </svg>
       </a>
       <nav class="site-nav" aria-label="Main">
@@ -259,6 +265,7 @@
                 <rect class="mask-bg" width="100%" height="100%" fill="#fff" />
                 <g data-logo-xform>
                   <use href="#logo-me" fill="#000" stroke="#000" stroke-width="16" stroke-linejoin="miter" stroke-miterlimit="4" />
+                  <use data-logo-leg href="#logo-m" fill="#000" stroke="#000" stroke-width="16" stroke-linejoin="miter" stroke-miterlimit="4" />
                 </g>
               </mask>
             </defs>

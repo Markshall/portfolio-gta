@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -77 310 294">
   <defs>
-    <path id="me" d="M0 0H64L85 48.7L106 0H140L85 127.5L34 12.4V140H0Z M146 0H180V140H146Z M194 140V0H294V32H234V54H280V86H234V108H294V140Z"/>
+    <path id="me" d="M0 0H49L90 65.4L131 0H173.4L90 133L34 43.7V140H0Z M146 0H180V140H146Z M194 140V0H294V32H234V54H280V86H234V108H294V140Z"/>
     <linearGradient id="fill" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="36" y2="140">
       <stop offset="0" stop-color="#3f6fe0"/>
       <stop offset="0.28" stop-color="#8a5ce0"/>
