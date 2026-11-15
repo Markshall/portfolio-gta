@@ -216,6 +216,20 @@ function setupMissions(onDone: (i: number) => void, reducedMotion: boolean) {
   $$(".project").forEach((project, i) =>
     whenPast(project, "bottom", 0.7, () => pass(i)),
   );
+
+  // The finale is the last word: clear any banner still up (or about to be) as it comes in.
+  whenPast(
+    $(".finale-title"),
+    "top",
+    0.95,
+    () => {
+      clearTimeout(flush);
+      pending = [];
+      tl?.kill();
+      tl = gsap.timeline().to(root, { autoAlpha: 0, duration: reducedMotion ? 0 : 0.3, ease: "power2.in" });
+    },
+    false,
+  );
 }
 
 /* ───────────── Boot ───────────── */
