@@ -17,16 +17,16 @@
     <!--
       Shared logo on a 294×140 grid: a heavy, plain M and E with a blue-to-pink-to-orange fill, faint upright
       palm trees, and a white / violet / dark-purple layered outline (8 units deep).
-      #logo-me is the V, the I bar and the E; #logo-m is the same with the M's left leg joined to the V.
-      #logo-art draws both, the legged one on top in [data-logo-leg], so the leg alone can fade out.
+      #logo-me is the V and the I bar; #logo-m is the same with the M's left leg joined to the V, and the E.
+      #logo-art draws both, the fuller one on top in [data-logo-leg], so the leg and the E can fade out.
       As drawn here the logo is an M: the V sits between the legs and runs into the I. The script slides the
-      V left over the leg, fades the leg, and leaves the V standing just clear of the I: a VI and an E.
+      V left over the leg, fades the leg, and the E with it, and leaves the V standing just clear of the I: a VI.
     -->
     <svg width="0" height="0" style="position: absolute" aria-hidden="true">
       <defs>
         <path
           id="logo-me"
-          d="M6.6 0H49L90 65.4L131 0H173.4L90 133Z M146 0H180V140H146Z M194 140V0H294V32H234V54H280V86H234V108H294V140Z"
+          d="M6.6 0H49L90 65.4L131 0H173.4L90 133Z M146 0H180V140H146Z"
         />
         <path id="logo-m" d="M0 0H49L90 65.4L131 0H173.4L90 133L34 43.7V140H0Z M146 0H180V140H146Z M194 140V0H294V32H234V54H280V86H234V108H294V140Z" />
         <clipPath id="logo-clip"><use href="#logo-me" /></clipPath>
@@ -98,8 +98,8 @@
     <header class="site-header" data-header>
       <a href="#top" class="brand" aria-label="Mark Eriksson, back to top">
         <svg viewBox="0 0 294 140" width="59" height="28" aria-hidden="true">
-          <use href="#logo-me" fill="url(#grad-logo)" />
-          <use data-logo-leg href="#logo-m" fill="url(#grad-logo)" />
+          <!-- Its own copy of the M, so the small mark stays still while the large logos change. -->
+          <path d="M0 0H49L90 65.4L131 0H173.4L90 133L34 43.7V140H0Z M146 0H180V140H146Z M194 140V0H294V32H234V54H280V86H234V108H294V140Z" fill="url(#grad-logo)" />
         </svg>
       </a>
       <nav class="site-nav" aria-label="Main">

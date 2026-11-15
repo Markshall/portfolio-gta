@@ -202,36 +202,74 @@ function drawFronds(r: () => number) {
 const V_AS_M = [6.6, 49, 90, 131, 173.4, 65.4, 133];
 const V_AS_VI = [5.1, 45.1, 72.55, 100, 140, 53.3, 130.5];
 const LEG_W = 34;
-// How much of the left leg stays visible in the VI, as a ghost of the M.
+// How much of the left leg and the E show while the V is landing, before they fade away altogether.
 const LEG_GHOST = 0.22;
+// Seconds: how long the M and the VI are each held, how long the change between them takes, and how soon
+// after the logo comes into view the first change starts.
+const HOLD_M = 6;
+const HOLD_VI = 2.5;
+const MORPH = 1.1;
+const FIRST_MORPH = 3;
 
 function setupLogoMorph() {
   const bare = $<SVGPathElement>("#logo-me");
   const legged = $<SVGPathElement>("#logo-m");
   const legLayers = $$<SVGElement>("[data-logo-leg]");
-  // The leg's share of the hero's window closes fully and early, so its ghost sits on the ink, not the scene.
+  // The leg's and the E's share of the hero's window closes fully and early, so their ghosts sit on the
+  // ink, not the scene.
   const legHoles = legLayers.filter((layer) => layer.closest("mask"));
   const legArt = legLayers.filter((layer) => !layer.closest("mask"));
-  // Everything after the V is left as drawn: the I bar and the E.
-  const d = bare.getAttribute("d")!;
-  const rest = d.slice(d.indexOf(" M"));
-  const state = { t: 0 };
+  // Everything after the V is left as drawn: the I bar, and in the fuller shape the E.
+  const tail = (path: SVGPathElement) => {
+    const d = path.getAttribute("d")!;
+    return d.slice(d.indexOf(" M"));
+  };
+  const bareTail = tail(bare);
+  const leggedTail = tail(legged);
+  // t runs from the M (0) to the VI (1); leg is the opacity of the M's left leg and the E.
+  const state = { t: 0, leg: 1 };
   const draw = () => {
     const [x, a, b, c, e, n, v] = V_AS_M.map((m, i) => +(m + (V_AS_VI[i] - m) * state.t).toFixed(2));
     // Where the V's left edge crosses the leg's inner edge.
     const y = +((v * (LEG_W - x)) / (b - x)).toFixed(2);
     const top = `H${a}L${b} ${n}L${c} 0H${e}L${b} ${v}`;
-    bare.setAttribute("d", `M${x} 0${top}Z${rest}`);
-    legged.setAttribute("d", `M0 0${top}L${LEG_W} ${y}V140H0Z${rest}`);
-    for (const layer of legArt) layer.setAttribute("opacity", (1 - state.t * (1 - LEG_GHOST)).toFixed(3));
+    bare.setAttribute("d", `M${x} 0${top}Z${bareTail}`);
+    legged.setAttribute("d", `M0 0${top}L${LEG_W} ${y}V140H0Z${leggedTail}`);
+    for (const layer of legArt) layer.setAttribute("opacity", state.leg.toFixed(3));
     for (const layer of legHoles) layer.setAttribute("opacity", ((1 - state.t) ** 3).toFixed(3));
   };
   draw();
-  gsap
-    .timeline({ delay: 2.6, repeat: -1, defaults: { duration: 1.1, ease: "power3.inOut", onUpdate: draw } })
-    .to(state, { t: 1 })
-    .to(state, { t: 0 }, "+=4.5")
-    .to({}, { duration: 2.5, onUpdate: undefined });
+
+  // ME is home. The VI is a short reveal: the V lands with the leg and the E still ghosts, then the
+  // ghosts go, so the VI is held clean and alone.
+  const loop = gsap
+    .timeline({ repeat: -1, paused: true, defaults: { ease: "power3.inOut", onUpdate: draw } })
+    .to(state, { t: 1, leg: LEG_GHOST, duration: MORPH }, HOLD_M)
+    .to(state, { leg: 0, duration: 0.8, ease: "power1.out" }, ">0.3")
+    .to(state, { t: 0, leg: 1, duration: MORPH }, HOLD_M + MORPH + HOLD_VI);
+
+  // Only run while a large logo is at rest in view: the hero's before the scroll zoom starts, or the
+  // finale's. Otherwise settle back to the M, which is also the shape the zoom's window should keep.
+  const finale = $(".finale-logo");
+  let finaleInView = false;
+  let running = false;
+  const update = () => {
+    const run = scrollY < 8 || finaleInView;
+    if (run === running) return;
+    running = run;
+    if (run) {
+      loop.play(HOLD_M - FIRST_MORPH);
+    } else {
+      loop.pause();
+      gsap.to(state, { t: 0, leg: 1, duration: 0.5, ease: "power2.out", onUpdate: draw });
+    }
+  };
+  new IntersectionObserver(([entry]) => {
+    finaleInView = entry.isIntersecting;
+    update();
+  }).observe(finale);
+  addEventListener("scroll", update, { passive: true });
+  update();
 }
 
 /* ───────────── Hero: the logo scales out to reveal the scene ───────────── */
